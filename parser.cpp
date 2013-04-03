@@ -83,7 +83,8 @@ bool PDPA1::parser(char *block_file_name,char* net_file_name){
 		return false;
 	}
 
-/*	ifstream net_file (net_file_name);
+
+	ifstream net_file (net_file_name);
 	if (net_file.is_open()){
 		if(!parse_net(net_file)){
 			cout<< "Unable to parse net file"<<endl;
@@ -92,14 +93,14 @@ bool PDPA1::parser(char *block_file_name,char* net_file_name){
 	}else{
 		cout << "Unable to open net file"<<endl;
 		return false;
-	}*/
+	}
 	return true;
+
 }
 bool PDPA1::parse_block(ifstream & block_file){
 		string line_in;
 		vector<string> line_out;
 		queue<string> rqueue;
-		bool eof=false;
 		int num_block=0;
 		int num_terminal=0;
 		enum Read_state{
@@ -111,29 +112,6 @@ bool PDPA1::parse_block(ifstream & block_file){
 		};
 		Read_state rstate=READ_OUTLINE;
 		while(true){
-	//		cout<< "rstate:" <<rstate<<endl;
-		/*	switch(rstate){	
-				case READ_OUTLINE:{
-				}break;
-				case READ_NUM_BLOCK:{
-					eof=store_line(block_file,rqueue,2,line_out);
-				}break;	
-				case READ_NUM_TERMINAL:{
-					eof=store_line(block_file,rqueue,2,line_out);
-				}break;
-				case READ_BLOCK:{
-					eof=store_line(block_file,rqueue,3,line_out);
-				
-				}break;
-				case READ_TERMINAL:{
-					eof=store_line(block_file,rqueue,4,line_out);	
-				}break;
-				default:{
-					assert(0);
-				}break;
-			}*/
-		//	cout<<"eof:"<<eof<<endl;
-	//		if(!eof){
 				switch(rstate){
 		//		cout<< "rstate2:" <<rstate<<endl;
 				case READ_OUTLINE:{
@@ -166,7 +144,7 @@ bool PDPA1::parse_block(ifstream & block_file){
 				}break;
 				case READ_BLOCK:{
 	//				cout<< "num_block:"<<num_block<<endl;
-					if(num_block-- >0){
+					if(--num_block>=0){
 						if(store_line(block_file,rqueue,3,line_out)){
 							return false;
 						}
@@ -174,26 +152,21 @@ bool PDPA1::parse_block(ifstream & block_file){
 						assert(_block.find(line_out[0])==_block.end());
 						_block[line_out[0]]=b;
 						//b->print();
-						if(num_block==0){
-							rstate=READ_TERMINAL;
-						}
 					}else{
 						rstate=READ_TERMINAL;
 					}
 				}break;
 				case READ_TERMINAL:{
 	//				cout<< "num_terminal:"<<num_terminal<<endl;
-					if(num_terminal-- >0){
+					if(--num_terminal>=0){
 						if(store_line(block_file,rqueue,4,line_out)){
 							return false;
 						}
 						Terminal* t= new Terminal(line_out[0], atoi(line_out[2].c_str()), atoi(line_out[3].c_str()) );
+		//				cout<<"line_out[0]:"<<line_out[0]<<endl;
 						assert(_terminal.find(line_out[0])==_terminal.end());
 						_terminal[line_out[0]]=t;
 						//t->print();
-						if(num_terminal==0){
-							return true;;
-						}
 					}else{
 						return true;
 						//rstate=READ_TERMINAL;
@@ -213,8 +186,9 @@ bool PDPA1::parse_block(ifstream & block_file){
 bool PDPA1::parse_net(ifstream & net_file){
 	string line_in;
 	vector<string> line_out;
-	unsigned num_net=0;
-	unsigned num_degree=0;
+	queue<string> rqueue;
+	int num_net=0;
+	int num_degree=0;
 	enum Read_state{
 		READ_NUM_NET=0,
 		READ_NUM_DEGREE,
@@ -223,49 +197,57 @@ bool PDPA1::parse_net(ifstream & net_file){
 	Net* n=0;
 	Read_state rstate=READ_NUM_NET;
 	while(true){
-		getline (net_file,line_in);
-		if(!net_file.eof()){
-			line_out=parse_line(line_in);
-		}
-		else{
-			return true;
-		}
 		switch(rstate){
 			case READ_NUM_NET:{
-				if( line_out.size()==2 ){
+				if( (!store_line(net_file,rqueue,2,line_out) ) &&  (line_out[0] .find("NumNets")!=string::npos))  {
 					num_net=atoi(line_out[1].c_str());
 					rstate=READ_NUM_DEGREE;
 				}else{
-					cout<<"f0"<<endl;
+			//		cout<<"f0"<<endl;
 					return false;
 				}
 			}break;
 			case READ_NUM_DEGREE:{
-				if( line_out.size()==2 ){
+				if( (!store_line(net_file,rqueue,2,line_out) ) &&  (line_out[0] .find("NetDegree")!=string::npos))  {
 					num_degree=atoi(line_out[1].c_str());
 					n=new Net(_net.size());	
 					rstate=READ_NET;		
 				}else{
-					cout<<"f1"<<endl;
+				//	cout<<"f1"<<endl;
 					return false;
 				}
 			}break;
 			case READ_NET:{
 				if(num_net > 0){
-					if(num_degree-- >0){
-						if( line_out.size()==1 ){
-							assert(_block.find(line_out[0])!=_block.end());
-							n->add_block(_block[line_out[0]]);
-							n->print();
+					if(--num_degree>=0){
+					//	cout<<"num_degree"<<num_degree<<endl;
+						if(store_line(net_file,rqueue,1,line_out)){
+					//		cout<<"f2"<<endl;
+							return false;
 						}
+					//	cout<<"line_out[0]:"<<line_out[0]<<endl;
+						if(_block.find(line_out[0])!=_block.end()){
+							n->add_terminal(_block[line_out[0]]);
+						}else if(_terminal.find(line_out[0])!=_terminal.end()){
+							n->add_terminal(_terminal[line_out[0]]);
+						}
+						else{
+							assert(0);
+						}
+						//n->print();
 					}
-					if(num_degree==0){
+					else{
 						_net.push_back(n);
-						num_net--;
-						rstate=READ_NUM_DEGREE;
+						if(--num_net>0){
+							rstate=READ_NUM_DEGREE;
+						}
+						else{
+							return true;
+						}
 					}
 				}
 				else{
+					//cout<<"f3"<<endl;
 					return true;
 				}
 			}break;
@@ -274,18 +256,18 @@ bool PDPA1::parse_net(ifstream & net_file){
 	}
 	return true;
 }
-void PDPA1::debug(){
-	cout<<"block:"<<endl;
+void PDPA1::parser_debug(){
+	cout<<"block_count:"<<_block.size()<<endl;
 	map<string,Block*>::iterator iter;
 	for (iter = _block.begin(); iter != _block.end(); iter++) {
 		iter->second->print();
 	}
-	cout<<"terminal:"<<endl;
+	cout<<"terminal_count:"<<_terminal.size()<<endl;
 	map<string,Terminal*>::iterator iter2;
 	for (iter2 = _terminal.begin(); iter2 != _terminal.end(); iter2++) {
 		iter2->second->print();
 	}
-
+	cout<<"net_count:"<<_net.size()<<endl;
 	for (size_t i=0;i<_net.size();i++){
 		_net[i]->print();
 	}

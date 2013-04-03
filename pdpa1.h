@@ -51,12 +51,12 @@ private:
 class Net{
 public:
 	Net(unsigned i):_id(i){}
-	void add_block(Terminal* t){
+	void add_terminal(Terminal* t){
 		t->add_net(this);
 		_tm.push_back(t);
 	}
 	void print(){
-		cout<<"net: ";
+		cout<<"net:"<<_tm.size()<<endl;;
 		for(size_t i=0;i<_tm.size();i++){
 			cout<<_tm[i]->get_name()<<" ";		
 		}
@@ -79,7 +79,7 @@ public:
 	bool store_line(ifstream& myfile,queue<string>& q,size_t s,vector<string>& vstr2);
 	//bool store_line(ifstream& myfile,queue<string>& q,size_t s);
 	string get_queue_front(queue<string>& q);
-	void debug();
+	void parser_debug();
 private:
 	unsigned* _outline;
 	map<string,Block*> _block;
