@@ -8,64 +8,10 @@
 #include<cstdio>
 #include<cassert>
 #include<queue>
+#include"bstree.h"
+#include"node.h"
 using namespace std;
-class Block;
-class Terminal;
-class Net;
 
-class Terminal{
-public:
-	Terminal(string n,unsigned x,unsigned y):_name(n),_x(x),_y(y){}
-
-	void add_net(Net* n){
-		_nt.push_back(n);
-	}
-	void print(){
-		cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<< _y<<endl;
-	}
-	string get_name(){
-		return _name;	
-	}
-
-protected:
-	vector<Net*> _nt; //net
-	string _name; //name
-	unsigned _x;
-	unsigned _y;
-};
-
-class Block : public Terminal{
-public:
-	Block(string n,unsigned h, unsigned w):Terminal(n,h,w){}//,_h(h),_w(w){}
-
-/*	void print(){
-		//cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<< _y<<" _h"<<h<<"_w"<<w<<endl;
-		cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<<_y<<endl;//<< _y<<" _h"<<h<<"_w"<<w<<endl;
-	}*/
-private:
-//	unsigned _h;
-//	unsigned _w;
-};
-
-
-class Net{
-public:
-	Net(unsigned i):_id(i){}
-	void add_terminal(Terminal* t){
-		t->add_net(this);
-		_tm.push_back(t);
-	}
-	void print(){
-		cout<<"net:"<<_tm.size()<<endl;;
-		for(size_t i=0;i<_tm.size();i++){
-			cout<<_tm[i]->get_name()<<" ";		
-		}
-		cout<<endl;
-	}
-private:
-	vector<Terminal*> _tm;
-	unsigned _id;	
-};
 
 class PDPA1{
 public:
@@ -79,17 +25,17 @@ public:
 	bool store_line(ifstream& myfile,queue<string>& q,size_t s,vector<string>& vstr2);
 	//bool store_line(ifstream& myfile,queue<string>& q,size_t s);
 	string get_queue_front(queue<string>& q);
-	void parser_debug();
+	void parser_debug(bool b=1,bool t=1,bool n=1);
+
+	template <class T> size_t vector_find(vector<T*>& v,string e );
+	void sort_block();
+
 private:
 	unsigned* _outline;
-	map<string,Block*> _block;
-	map<string,Terminal*> _terminal;
-
+	vector<Block*> _block;
+	vector<Terminal*> _terminal;
 	vector<Net*> _net;
-
 };
-
-
 
 
 

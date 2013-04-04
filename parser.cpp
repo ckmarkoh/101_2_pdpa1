@@ -149,8 +149,10 @@ bool PDPA1::parse_block(ifstream & block_file){
 							return false;
 						}
 						Block* b= new Block(line_out[0], atoi(line_out[1].c_str()), atoi(line_out[2].c_str()) );
-						assert(_block.find(line_out[0])==_block.end());
-						_block[line_out[0]]=b;
+						//assert(_block.find(line_out[0])==_block.end());
+						//_block[line_out[0]]=b;
+						assert(vector_find(_block,line_out[0])==_block.size());
+						_block.push_back(b);
 						//b->print();
 					}else{
 						rstate=READ_TERMINAL;
@@ -164,8 +166,10 @@ bool PDPA1::parse_block(ifstream & block_file){
 						}
 						Terminal* t= new Terminal(line_out[0], atoi(line_out[2].c_str()), atoi(line_out[3].c_str()) );
 		//				cout<<"line_out[0]:"<<line_out[0]<<endl;
-						assert(_terminal.find(line_out[0])==_terminal.end());
-						_terminal[line_out[0]]=t;
+						//assert(_terminal.find(line_out[0])==_terminal.end());
+						//_terminal[line_out[0]]=t;
+						assert(vector_find(_terminal,line_out[0])==_terminal.size());
+						_terminal.push_back(t);
 						//t->print();
 					}else{
 						return true;
@@ -225,14 +229,18 @@ bool PDPA1::parse_net(ifstream & net_file){
 					//		cout<<"f2"<<endl;
 							return false;
 						}
+						size_t pos=vector_find(_block,line_out[0]);
 					//	cout<<"line_out[0]:"<<line_out[0]<<endl;
-						if(_block.find(line_out[0])!=_block.end()){
-							n->add_terminal(_block[line_out[0]]);
-						}else if(_terminal.find(line_out[0])!=_terminal.end()){
-							n->add_terminal(_terminal[line_out[0]]);
-						}
-						else{
-							assert(0);
+						if(pos!=_block.size()){
+							n->add_terminal(_block[pos]);
+						}else{
+							pos=vector_find(_terminal,line_out[0]);
+							if(pos!=_terminal.size()){
+								n->add_terminal(_terminal[pos]);
+							}
+							else{
+								assert(0);
+							}
 						}
 						//n->print();
 					}
@@ -256,19 +264,49 @@ bool PDPA1::parse_net(ifstream & net_file){
 	}
 	return true;
 }
-void PDPA1::parser_debug(){
-	cout<<"block_count:"<<_block.size()<<endl;
-	map<string,Block*>::iterator iter;
-	for (iter = _block.begin(); iter != _block.end(); iter++) {
-		iter->second->print();
+
+void PDPA1::parser_debug(bool b,bool t,bool n){
+	if(b){
+		cout<<"block_count:"<<_block.size()<<endl;
+		for (size_t i=0;i<_block.size();i++){
+			_block[i]->print();
+		}
 	}
-	cout<<"terminal_count:"<<_terminal.size()<<endl;
-	map<string,Terminal*>::iterator iter2;
-	for (iter2 = _terminal.begin(); iter2 != _terminal.end(); iter2++) {
-		iter2->second->print();
+	if(t){
+		cout<<"terminal_count:"<<_terminal.size()<<endl;
+			for (size_t i=0;i<_terminal.size();i++){
+			_terminal[i]->print();
+		}
 	}
-	cout<<"net_count:"<<_net.size()<<endl;
-	for (size_t i=0;i<_net.size();i++){
-		_net[i]->print();
+	if(n){
+		cout<<"net_count:"<<_net.size()<<endl;
+		for (size_t i=0;i<_net.size();i++){
+			_net[i]->print();
+		}
 	}
 }
+
+template <class T> size_t 
+PDPA1::vector_find(vector<T*>& v,string e ){
+	for(size_t i=0;i< v.size();i++){
+		if(v[i]->get_name()==e){
+			return i;	
+		}
+	}
+	return v.size();
+}
+
+void PDPA1::sort_block(){
+	for(unsigned j=1 ;j<_block.size();j++)
+		{
+		Block* temp=_block[j];
+		int i=j-1;
+		while(( i>=0) && (_block[i]->area() > temp->area()))
+			{
+			_block[i+1]=_block[i];
+			i=i-1;
+			}
+		_block[i+1]= temp;
+		}
+}
+
