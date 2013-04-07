@@ -1,5 +1,8 @@
 #ifndef PDPA1_H
 #define PDPA1_H
+#include <stdio.h>
+#include <string.h>
+
 #include<iostream>
 #include<fstream>
 #include<vector>
@@ -8,7 +11,9 @@
 #include<cstdio>
 #include<cassert>
 #include<queue>
+#include <algorithm>    
 #include"bstree.h"
+#include"bstreeMgr.h"
 #include"node.h"
 using namespace std;
 
@@ -17,6 +22,11 @@ class PDPA1{
 public:
 	PDPA1(){
 		_outline=new unsigned[2];
+		_treemgr=new BSTreeMgr();
+	}
+	~PDPA1(){
+		delete _outline;
+		delete _treemgr;
 	}
 	vector<string> parse_line(string line);
 	bool parser(char *block_file_name,char* net_file_name);	
@@ -29,12 +39,13 @@ public:
 
 	template <class T> size_t vector_find(vector<T*>& v,string e );
 	void sort_block();
-
+	void build_tree();
 private:
 	unsigned* _outline;
 	vector<Block*> _block;
 	vector<Terminal*> _terminal;
 	vector<Net*> _net;
+	BSTreeMgr* _treemgr;
 };
 
 

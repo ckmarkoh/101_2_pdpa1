@@ -7,5 +7,6 @@ int main (int argc, char *argv[]){
 		pdpa1->parser_debug(1,0,0);
 		pdpa1->sort_block();
 		pdpa1->parser_debug(1,0,0);	
+		pdpa1->build_tree();
 	}
 }

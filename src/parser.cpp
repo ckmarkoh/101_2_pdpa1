@@ -301,7 +301,7 @@ void PDPA1::sort_block(){
 		{
 		Block* temp=_block[j];
 		int i=j-1;
-		while(( i>=0) && (_block[i]->area() > temp->area()))
+		while(( i>=0) && (_block[i]->area() < temp->area()))
 			{
 			_block[i+1]=_block[i];
 			i=i-1;
