@@ -17,7 +17,7 @@
 #define my_srandom  srandom
 #define my_random   random
 //#define SEED time(0)
-#define SEED 2321
+#define SEED 1365438783
 class RandomNumGen
 {
    public:

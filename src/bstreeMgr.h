@@ -121,7 +121,7 @@ public:
 		while((! _container.rotate(_rnGen(unsigned(_container.size()-1)),bool(_rnGen(unsigned(2))) ) )&&(i++<10));
    }
 	
-   void random_neighbor(){
+   void random_neighbor(){//BUG
    	_backup_container=_container;
 	assert(_setted_size=_container.size());
 	if(bool(_rnGen(unsigned(2)))){
@@ -133,7 +133,7 @@ public:
 		random_exchange();
 	}
 	assert(_setted_size=_container.size());
-   }
+   }//BUG
 	void restore_backup(){
 		_container=_backup_container;
 	}
