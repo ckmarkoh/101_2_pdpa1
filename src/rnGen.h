@@ -15,14 +15,18 @@
 
 #define my_srandom  srandom
 #define my_random   random
-
+#define SEED 4422
 class RandomNumGen
 {
    public:
-      RandomNumGen() { my_srandom(getpid()); }
+   //   RandomNumGen() { my_srandom(getpid()); }
+      RandomNumGen() { my_srandom(SEED); }
       RandomNumGen(unsigned seed) { my_srandom(seed); }
       const double operator() (const double range) const {
          return double(range * (double(my_random()) / INT_MAX));
+      }
+      const unsigned operator() (const unsigned range) const {
+         return unsigned(range * (double(my_random()) / INT_MAX));
       }
 };
 

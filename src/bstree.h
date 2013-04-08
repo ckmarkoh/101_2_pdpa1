@@ -158,10 +158,10 @@ friend class iterator;
 	BSTreeNode<T>* getend()
 	{return _eNode;}
 
-   void leftRot(BSTreeNode<T>* x );
-   void rightRot(BSTreeNode<T>* x );
+   bool leftRot(BSTreeNode<T>* x );
+   bool rightRot(BSTreeNode<T>* x );
 
-   void rotate(size_t id,bool right );
+   bool rotate(size_t id,bool right );
      
 private:
     BSTreeNode<T>*   _root;
@@ -535,7 +535,7 @@ template <class T>
    }
 
 template <class T>
-   void BSTree<T>::leftRot(BSTreeNode<T>* x ) {
+   bool BSTree<T>::leftRot(BSTreeNode<T>* x ) {
 	   if( (x!=_eNode) && (x->_right!=0) && (x->_right!=_eNode) ){
 			BSTreeNode<T>* y=x->_right;
 			if(x!=_root){
@@ -567,13 +567,15 @@ template <class T>
 			x->_right=l;
 			x->_pare=y;
 			y->_left=x;
+			return true;
 		}
 		else{
+			return false;
 			//cout<<"1-5"<<endl;//OK
 		}
    	}
 template <class T>
-   void BSTree<T>::rightRot(BSTreeNode<T>* x ) {
+   bool BSTree<T>::rightRot(BSTreeNode<T>* x ) {
 	   if( (x!=_eNode) && (x->_left!=0)){
 			BSTreeNode<T>* y=x->_left;
 			if(x!=_root){
@@ -605,8 +607,10 @@ template <class T>
 			x->_left=l;
 			x->_pare=y;
 			y->_right=x;
+			return true;
 		}
 		else{
+			return false;
 			//cout<<"2-5"<<endl;//OK
 		}
    	}
@@ -615,7 +619,7 @@ template <class T>
 
 
 template <class T>
-void BSTree<T>::rotate(size_t id,bool right ){
+bool BSTree<T>::rotate(size_t id,bool right ){
    iterator pos=begin();
    //cout<<"1"<<endl;
    	if(id>=size()){
@@ -625,14 +629,14 @@ void BSTree<T>::rotate(size_t id,bool right ){
 		pos++;
 	}
 	if(!right){
-		//cout<<"1-0"<<endl;
+		cout<<"1-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
-		leftRot(pos._node);
+		return leftRot(pos._node);
 	}
 	else{
-		//cout<<"2-0"<<endl;
+		cout<<"2-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
-		rightRot(pos._node);
+		return rightRot(pos._node);
 	}
    }
 

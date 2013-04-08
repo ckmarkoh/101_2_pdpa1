@@ -38,6 +38,7 @@ public:
 	template <class T> size_t vector_find(vector<T*>& v,string e );
 	void sort_block();
 	void build_tree();
+	void tree_debug();
 private:
 	unsigned* _outline;
 	vector<Block*> _block;

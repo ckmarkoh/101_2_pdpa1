@@ -38,8 +38,6 @@ public:
 	   return (os << "id:"<<o._id<<" name:"<<o._b->get_name() );
    }
    Block* getBlock(){return _b;}
-   void setID(float i){_id=i;}
-
 private:
    float      _id;  // _data should alywas be between [0, _dataRange - 1]
    Block* 	  _b;
@@ -86,18 +84,7 @@ public:
 			 if (_container.erase(getPos(pos))) --s;
 		}
 	}*/
-	void random_exchange() {
-		size_t s = _container.size();
-		assert(s>1);
-		size_t pos = _rnGen(unsigned(s-1));
-		BSTree<BSTreeObj>::iterator it =getPos(pos);
-		Block* b = (*it).getBlock();
-		 if (_container.erase(getPos(pos))){
-			while(!insert(float(s),b,1 ));
-		 }else{
-		 	assert(0);
-		}
-	}
+
    void print(bool reverse = false, bool verbose = false) {
       if (verbose)
          _container.print();  // for BST only
@@ -115,7 +102,11 @@ public:
    void random_rotate(){
    		int i=0;
 		while((! _container.rotate(_rnGen(unsigned(_container.size()-1)),bool(_rnGen(unsigned(2))) ) )&&(i++<10));
+   
    }
+
+
+
 
    BSTree<BSTreeObj>::iterator getPos(size_t pos) {
          size_t i = 0;
