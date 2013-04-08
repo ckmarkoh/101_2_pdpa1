@@ -17,7 +17,9 @@
 #define my_srandom  srandom
 #define my_random   random
 //#define SEED time(0)
-#define SEED 1365438783
+#define SEED 1365439588 //bug2 rotate+rotate
+//#define SEED 1365438783 //bug1 rotate+exchange
+//#define SEED 1365439384 //good1 rotate+exchange
 class RandomNumGen
 {
    public:

@@ -59,8 +59,6 @@ public:
 
 	  void reset() { deleteAll();}// BSTreeObj::setLen(len); }
 
-//   bool add() { return insert(BSTreeObj()); }  // insert random number
-
    void deleteAll() { _container.clear(); }
 /*   bool deleteObj(const BSTreeObj& o) { return _container.erase(o); }*/
    bool deleteObj(const size_t o) { return _container.erase(getPos(o)); }
@@ -74,18 +72,6 @@ public:
 	   return _container.insert(o); 
    }
 
-/*   void deleteFront(size_t repeat = 1) {
-      for (size_t i = 0; i < repeat; ++i) _container.pop_front(); 
-	  }
-   void deleteBack(size_t repeat = 1) {
-      for (size_t i = 0; i < repeat; ++i) _container.pop_back(); }*/
-/*	void deleteRandom(size_t repeat = 1) {
-		size_t s = _container.size();
-		for (size_t i = 0; i < repeat; ++i) {
-			 size_t pos = rnGen(s);
-			 if (_container.erase(getPos(pos))) --s;
-		}
-	}*/
 	void random_exchange() {
 		size_t s = _container.size();
 		assert(s>1);
@@ -123,21 +109,23 @@ public:
 	
    void random_neighbor(){//BUG
    	_backup_container=_container;
-	assert(_setted_size=_container.size());
+	assert(_setted_size==getContainerSize());
 	if(bool(_rnGen(unsigned(2)))){
 		//		cout<<"random_rotate"<<endl;
 		random_rotate();
 	}
 	else{
 		//		cout<<"random_exchange"<<endl;
-		random_exchange();
+	//	random_exchange();
+		random_rotate();
 	}
-	assert(_setted_size=_container.size());
+	assert(_setted_size==getContainerSize());
    }//BUG
+
 	void restore_backup(){
 		_container=_backup_container;
 	}
-   BSTree<BSTreeObj>::iterator getPos(size_t pos) {
+	   BSTree<BSTreeObj>::iterator getPos(size_t pos) {
          size_t i = 0;
          BSTree<BSTreeObj>::iterator li = _container.begin();
          BSTree<BSTreeObj>::iterator lj = _container.end();
@@ -183,6 +171,17 @@ private:
 	RandomNumGen _rnGen;
    // private functions
    // return end() if 'pos' passes the end
+
+   size_t getContainerSize() {
+      size_t idx = 0;
+      BSTree<BSTreeObj>::iterator li = _container.begin();
+      for (; li != _container.end(); ++li){
+         idx++;
+		}
+		return idx;
+   }
+
+
   void printForward() {
       size_t idx = 0;
       BSTree<BSTreeObj>::iterator li = _container.begin();
