@@ -12,15 +12,20 @@
 #include <sys/types.h>
 #include <stdlib.h>  
 #include <limits.h>
+#include <ctime>
 
 #define my_srandom  srandom
 #define my_random   random
-#define SEED 4422
+//#define SEED time(0)
+#define SEED 2321
 class RandomNumGen
 {
    public:
    //   RandomNumGen() { my_srandom(getpid()); }
-      RandomNumGen() { my_srandom(SEED); }
+      RandomNumGen() { 
+		  cout<<"SEED:"<<SEED<<endl; 
+		  my_srandom(SEED); 
+	  }
       RandomNumGen(unsigned seed) { my_srandom(seed); }
       const double operator() (const double range) const {
          return double(range * (double(my_random()) / INT_MAX));

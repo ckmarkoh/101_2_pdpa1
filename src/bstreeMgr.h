@@ -36,6 +36,7 @@ public:
 //   static void setLen(int len) { _idLen = len; }
    friend ostream& operator << (ostream& os, const BSTreeObj& o){
 	   return (os << "id:"<<o._id<<" name:"<<o._b->get_name() );
+	   return (os <<o._b->get_name() );
    }
    Block* getBlock(){return _b;}
    void setID(float i){_id=i;}
@@ -73,7 +74,6 @@ public:
 	   return _container.insert(o); 
    }
 
-
 /*   void deleteFront(size_t repeat = 1) {
       for (size_t i = 0; i < repeat; ++i) _container.pop_front(); 
 	  }
@@ -92,9 +92,13 @@ public:
 		size_t pos = _rnGen(unsigned(s-1));
 		BSTree<BSTreeObj>::iterator it =getPos(pos);
 		Block* b = (*it).getBlock();
-		 if (_container.erase(getPos(pos))){
-			while(!insert(float(s),b,1 ));
+		 if (_container.erase(it)){
+			while(!insert(s,b,1 )){cout<<"1"<<endl;}
 		 }else{
+		 	print();
+			cout<<"pos:"<<pos<<endl;
+			//cout<<"it:"<<*it<<endl;
+		 	_container.print();
 		 	assert(0);
 		}
 	}
@@ -116,7 +120,23 @@ public:
    		int i=0;
 		while((! _container.rotate(_rnGen(unsigned(_container.size()-1)),bool(_rnGen(unsigned(2))) ) )&&(i++<10));
    }
-
+	
+   void random_neighbor(){
+   	_backup_container=_container;
+	assert(_setted_size=_container.size());
+	if(bool(_rnGen(unsigned(2)))){
+		//		cout<<"random_rotate"<<endl;
+		random_rotate();
+	}
+	else{
+		//		cout<<"random_exchange"<<endl;
+		random_exchange();
+	}
+	assert(_setted_size=_container.size());
+   }
+	void restore_backup(){
+		_container=_backup_container;
+	}
    BSTree<BSTreeObj>::iterator getPos(size_t pos) {
          size_t i = 0;
          BSTree<BSTreeObj>::iterator li = _container.begin();
@@ -124,10 +144,42 @@ public:
          while ((li != lj) && (i++ != pos)) ++li;
          return li;
    }
- 
+
+   void traverse_from_root(){
+   		_cost=0;
+		BSTree<BSTreeObj>::iterator it1=_container.root();
+  		recTraverse(it1,1); 
+   }
+   void recTraverse(BSTree<BSTreeObj>::iterator& it,float level){
+		 BSTree<BSTreeObj>::iterator it1 = it;
+		 BSTree<BSTreeObj>::iterator it2 = it;
+		 _cost+=level*level;
+	//	 cout<<setw((int)level)<<level<<":"<<*it<<endl;
+		 if(it1.to_left_child()){
+			recTraverse(it1,level+1);
+		 }
+		 if(it2.to_right_child()){
+			recTraverse(it2,level+1);
+		 }
+   }
+	
+	float getCost(){
+		traverse_from_root();
+		return _cost;
+	}
+
+	float getRandom(float f){
+		return _rnGen(f);
+	}
+	void setSize(size_t s){
+		_setted_size=s;
+	}
 private:
    BSTree<BSTreeObj>   _container;
-
+	
+   BSTree<BSTreeObj>   _backup_container;
+	float _cost;
+	size_t _setted_size;
 	RandomNumGen _rnGen;
    // private functions
    // return end() if 'pos' passes the end
@@ -150,6 +202,7 @@ private:
    void printData(size_t idx, BSTree<BSTreeObj>::iterator li, size_t r) {
       cout << "[" << setw(3) << right << idx << "] = "
            << setw(3) << right << *li << "   ";
+	  //cout<< *li<<endl;
       if (idx % 5 == r) cout << endl;
    }
 };

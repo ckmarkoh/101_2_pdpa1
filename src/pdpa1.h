@@ -34,11 +34,11 @@ public:
 	//bool store_line(ifstream& myfile,queue<string>& q,size_t s);
 	string get_queue_front(queue<string>& q);
 	void parser_debug(bool b=1,bool t=1,bool n=1);
-
-	template <class T> size_t vector_find(vector<T*>& v,string e );
-	void sort_block();
+	template <class T> size_t vector_find(vector<T*>& v,string e );//TODO
+	void sort_block();//TODO
 	void build_tree();
 	void tree_debug();
+	void simu_anneal();
 private:
 	unsigned* _outline;
 	vector<Block*> _block;
