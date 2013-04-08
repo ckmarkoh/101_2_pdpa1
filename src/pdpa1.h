@@ -22,11 +22,9 @@ class PDPA1{
 public:
 	PDPA1(){
 		_outline=new unsigned[2];
-		_treemgr=new BSTreeMgr();
 	}
 	~PDPA1(){
 		delete _outline;
-		delete _treemgr;
 	}
 	vector<string> parse_line(string line);
 	bool parser(char *block_file_name,char* net_file_name);	
@@ -45,7 +43,7 @@ private:
 	vector<Block*> _block;
 	vector<Terminal*> _terminal;
 	vector<Net*> _net;
-	BSTreeMgr* _treemgr;
+	BSTreeMgr _treemgr;
 };
 
 

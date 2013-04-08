@@ -111,6 +111,8 @@ friend class iterator;
         return (i._node == _node);
         }
 
+      bool left_child();
+	  bool right_child();
 
     BSTreeNode<T>* ToNext(BSTreeNode<T>* t) ; 
 
@@ -168,9 +170,9 @@ private:
 	//static BSTreeNode<T>* _tail;
 
    // [OPTIONAL TODO] helper functions; 
-   void edRecont();
-   void del(BSTreeNode<T>* x);
-    void recDel(BSTreeNode<T>* posX);
+	void edRecont();
+	void del(BSTreeNode<T>* x);
+	void recDel(BSTreeNode<T>* posX);
     BSTreeNode<T>* findMin(BSTreeNode<T>* t); 
     BSTreeNode<T>* findMax(BSTreeNode<T>* t) ;
     BSTreeNode<T>* findSsc(BSTreeNode<T>* t) ;
@@ -181,6 +183,27 @@ private:
 template <class T>
 BSTreeNode<T>* BSTree<T>::_eNode =0 ;
 
+template <class T>
+  bool BSTree<T>::iterator::left_child(){
+	if(_node->_left!=0){
+		_node=_node->_left;
+		return true;
+	}
+	else{
+		return false;	
+	}
+  }
+
+template <class T>
+  bool BSTree<T>::iterator::right_child(){//NOT GO TO  ENODE
+	if((_node->_right!=0)&&(_node->_right!=_eNode)){
+		_node=_node->_right;
+		return true;
+	}
+	else{
+		return false;	
+	}
+  }
 
 template <class T>
     BSTreeNode<T>* BSTree<T>::iterator::ToNext(BSTreeNode<T>* t)  
@@ -625,5 +648,4 @@ bool BSTree<T>::erase(size_t id){
 		}
 		return erase(pos);
 	}
-
 #endif // BST_H
