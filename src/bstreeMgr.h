@@ -57,7 +57,7 @@ class BSTreeMgr
 public:
 	BSTreeMgr(){
 		_container= new BSTree<BSTreeObj>();
-		_backup_container= new BSTree<BSTreeObj>();
+		//_backup_container= new BSTree<BSTreeObj>();
 	}
 
 	  void reset() { deleteAll();}// BSTreeObj::setLen(len); }
@@ -76,9 +76,10 @@ public:
    }
 
 	void random_exchange() {
+		container_backup();
 		size_t s = _container->size();
 		assert(s>1);
-		size_t pos = _rnGen(unsigned(s-1));
+		size_t pos = _rnGen(unsigned(s));
 		BSTree<BSTreeObj>::iterator it =getPos(pos);
 		Block* b = (*it).getBlock();
 		 if (_container->erase(it)){
@@ -100,127 +101,52 @@ public:
       cout << endl;
    }
 
+   void random_rotate(){
+   		//cout<<"rotate"<<endl;
+		container_backup();
+		size_t z=0;
+		while(true){
+			size_t id=_rnGen(unsigned(_container->size()));
+			BSTree<BSTreeObj>::iterator it =getPos(id);
+			bool right=bool(_rnGen(unsigned(2))); 
+			cout<<"id:"<<id<<endl;
+
+        	if(_container->rotate(it,right)){
+			/*	cout<<"1"<<endl;
+				if(right){
+					assert(it.to_left_child());
+				}
+				else{
+					assert(it.to_right_child());
+				}
+					_backup_right=right;
+					_backup_it=it;		*/
+				break;
+				// for BST only
+   			}
+			if(z++>10){break;}
+   		}
+   }
+
    bool rotate(size_t id=0,bool right=false){
    		//cout<<"rotate"<<endl;
-        return  _container->rotate(id,right);  // for BST only
+		return _container->rotate(id,right);
    }
-
-   void random_rotate(){
-   	//	cout<<"print0"<<endl;
-   	//	print(0,1);
-   		int i=0;
-		while((! _container->rotate(_rnGen(unsigned(_container->size()-1)),bool(_rnGen(unsigned(2))) ) )&&(i++<10));
-   	//	cout<<"print1"<<endl;
-	//	print(0,1);
-   }
+  
 	
    void random_neighbor(){//BUG
-	   /*	if(_setted_size!=getContainerSize()){
-			cout<<"print3"<<endl;
-			print(0,1);
-			_container->_backup_container->
-			cout<<"print4"<<endl;
-			print(0,1);
-			assert(0);
-		}*/
-		//container_backup();
-		//_backup_container->_container->
-		//assert(_setted_size==getContainerSize());
-		if(bool(_rnGen(unsigned(2)))){
-			//		cout<<"random_rotate"<<endl;
-			random_rotate();
+		if((_rnGen(unsigned(12)))%2==0){
+			cout<<"random_exchange"<<endl;
+			_random_state=EXCHANGE;
+			random_exchange();
 		}
 		else{
-			//		cout<<"random_exchange"<<endl;
-			random_exchange();
-		//	random_rotate();
+			cout<<"random_rotate"<<endl;
+			_random_state=ROTATE_TREE;
+			random_rotate();
 		}
-			//cout<<"print2"<<endl;
-			//print(0,1);
-		//assert(_setted_size==getContainerSize());
    }//BUG
 
-
-
-/*
-	void restore_backup(){//TODO
-		//_container->clear();
-		cout<<"restore backup 1"<<endl;
-		cout<<"*******************container****************"<<endl;
-		_container->print();
-		cout<<"*******************backup*******************"<<endl;
-		_backup_container->print();
-		
-		_container=newTree(_backup_container);
-		cout<<"restore backup 2"<<endl;
-
-		cout<<"*******************container****************"<<endl;
-		_container->print();
-		cout<<"*******************backup*******************"<<endl;
-		_backup_container->print();
-
-	}
-	void container_backup(){//TODO
-		//_backup_container->clear();
-		cout<<"container backup 1"<<endl;
-		cout<<"*******************container****************"<<endl;
-		_container->print();
-		cout<<"*******************backup*******************"<<endl;
-		_backup_container->print();
-
-		_backup_container=newTree(_container);
-		cout<<"container backup 2"<<endl;
-		cout<<"*******************container****************"<<endl;
-		_container->print();
-		cout<<"*******************backup*******************"<<endl;
-		_backup_container->print();
-	}
-
-
-  	void backup()//TODO 
-	{
-		cout<<"overloaded assign"<<endl;
-	//	queue< BSTreeNode<T>* > q;
-		BSTree<BSTreeObj>* newtree= new BSTree<BSTreeObj>();
-//		BSTreeNode<T>* it0=t->_root;
-		BSTree<BSTreeObj>::iterator it0=t->root();
-		//BSTree<BSTreeObj>::iterator it0 =t->root();
-		queue< BSTree<BSTreeObj>::iterator > q;
-		q.push( it0 );
-	//	int i=0;
-		while(q.size()>0){
-			//	BSTreeNode<T>* it=q.front();
-				BSTree<BSTreeObj>::iterator it=q.front();
-				q.pop();
-				if((it!=t->end())&&((*it).getId()!=-1)){
-				//	if(it!=t->root()){
-				//		cout<<"insert to tree parent:"<<it->_pare->_data<<endl;
-				//	}
-					//cout<<"insert to tree:"<<it->_data<<endl;
-					cout<<"insert to tree:"<<*it<<endl;
-					newtree->insert(*it);
-					BSTree<BSTreeObj>::iterator it1=it;
-					BSTree<BSTreeObj>::iterator it2=it;
-					
-					if(it1.to_left_child()){
-					//	cout<<"push to queue:"<<it->_left->_data<<endl;
-		//				cout<<"push to queue:"<<*it1<<endl;
-						q.push(it1);
-					}
-					if(it2.to_right_child() && ((it!=t->end())&&((*it).getId()!=-1))   ){
-		//				cout<<it->_right<<endl;
-		//				cout<<t->_eNode<<endl;
-		//				cout<<"push to queue:"<<it->_right->_data<<endl;
-		//				cout<<"push to queue:"<<*it2<<endl;
-						q.push(it2);
-					}
-				}
-				//if(i++>100){break;}
-		}
-		cout<<"complete overloaded assign"<<endl;
-	//_node = i._node;
-	 return newtree; 
-	}*/
 
 	void container_backup(){
 		queue< BSTree<BSTreeObj>::iterator > q;
@@ -245,11 +171,20 @@ public:
 	}
 	void restore_backup(){
 		
-		_container->clear();	
-		for(size_t i=0;i<_backup_vec.size();i++){
-			insert(_backup_vec[i].getId(),_backup_vec[i].getBlock(),0);
+		if( (_random_state==EXCHANGE) || (_random_state==ROTATE_TREE)){
+			cout<<"restore exchange"<<endl;
+			_container->clear();	
+			for(size_t i=0;i<_backup_vec.size();i++){
+				insert(_backup_vec[i].getId(),_backup_vec[i].getBlock(),0);
+			}
 		}
+		else if(_random_state==ROTATE_BLOCK){
 
+			assert(0);
+		}
+		else{
+			assert(0);
+		}
 	}
 
    BSTree<BSTreeObj>::iterator getPos(size_t pos) {
@@ -286,19 +221,34 @@ public:
 	float getRandom(float f){
 		return _rnGen(f);
 	}
-	void setSize(size_t s){
+/*	void setSize(size_t s){
 		_setted_size=s;
-	}
+	}*/
 private:
    BSTree<BSTreeObj>*   _container;
-   BSTree<BSTreeObj>*  _backup_container;
-   vector<BSTreeObj> _backup_vec;
+   //BSTree<BSTreeObj>*  _backup_container;
+
+	
 	float _cost;
-	size_t _setted_size;
+//	size_t _setted_size;
+
+
+   vector<BSTreeObj> _backup_vec; // EXCHANGE BACKUP
+
+	bool _backup_right; //ROTATE TREE BACKUP
+	BSTree<BSTreeObj>::iterator _backup_it; //ROTATE BACKUP 
+
+
+	enum {
+		EXCHANGE=0,
+		ROTATE_TREE,
+		ROTATE_BLOCK
+	}_random_state;
+
 	RandomNumGen _rnGen;
    // private functions
    // return end() if 'pos' passes the end
-
+	
    size_t getContainerSize() {
       size_t idx = 0;
       BSTree<BSTreeObj>::iterator li = _container->begin();
@@ -329,7 +279,7 @@ private:
       //cout << "[" << setw(3) << right << idx << "] = "
         //   << setw(3) << right << *li << "   ";
 	  //cout<< *li<<endl;
-	  cout<<*li<<endl;
+//	  cout<<*li<<endl;
       //if (idx % 5 == r) cout << endl;
    }
 };

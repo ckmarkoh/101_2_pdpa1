@@ -14,25 +14,31 @@ void PDPA1::tree_debug(){
 }
 void PDPA1::build_tree(){
 	assert(_block.size()>=3);
-/*	_treemgr.insert(float(_block.size())*0.5,_block[0]);
+	_treemgr.insert(float(_block.size())*0.5,_block[0]);
 	_treemgr.insert(float(_block.size())*0.25,_block[1]);
 	_treemgr.insert(float(_block.size())*0.75,_block[2]);
-	_treemgr.setSize(_block.size());*/
-	for(size_t i=0;i<_block.size();i++){
+	for(size_t i=3;i<_block.size();i++){
 		//_treemgr.insert(float(_block.size()),_block[i],1);
 
-		_treemgr.insert(float(i),_block[i],0);
+		_treemgr.insert(_block.size(),_block[i],1);
 	}
 	
 //	tree_debug();
-	/*for(size_t i=0;i<50;i++){
-	_treemgr.random_exchange();
-	}*/
+/*	for(size_t i=0;i<5;i++){
+		cout<<"tree1:"<<i<<endl;
+		tree_debug();
+		_treemgr.random_neighbor();
+		cout<<"tree2:"<<i<<endl;
+		tree_debug();
+		_treemgr.restore_backup();
+		cout<<"tree3:"<<i<<endl;
+		tree_debug();
+	}
 //	simu_anneal();
 //		cout<<"tree1"<<endl;
 //		tree_debug();
 	
-/*		_treemgr.container_backup();
+	_treemgr.container_backup();
 		_treemgr.random_neighbor();
 		cout<<"tree2"<<endl;
 		tree_debug();

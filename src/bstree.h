@@ -170,8 +170,12 @@ friend class iterator;
    bool leftRot(BSTreeNode<T>* x );
    bool rightRot(BSTreeNode<T>* x );
 
-
+   bool leftRot(iterator it ){ return leftRot(it._node); };
+   bool rightRot(iterator it ){ return rightRot(it._node); };
+   
    bool rotate(size_t id,bool right );
+
+   bool rotate(iterator it,bool right );
      
 private:
     BSTreeNode<T>*   _root;
@@ -634,7 +638,6 @@ template <class T>
 
 
 
-
 template <class T>
 bool BSTree<T>::rotate(size_t id,bool right ){
    iterator pos=begin();
@@ -645,13 +648,19 @@ bool BSTree<T>::rotate(size_t id,bool right ){
 	for(size_t i=0;i<id;i++){
 		pos++;
 	}
+		return	rotate(pos,right);
+   }
+
+template <class T>
+bool BSTree<T>::rotate(iterator pos,bool right ){
+
 	if(!right){
-	//	cout<<"1-0"<<endl;
+		cout<<"1-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
 		return leftRot(pos._node);
 	}
 	else{
-	//	cout<<"2-0"<<endl;
+		cout<<"2-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
 		return rightRot(pos._node);
 	}
