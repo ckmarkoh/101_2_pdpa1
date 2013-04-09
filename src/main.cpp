@@ -12,6 +12,5 @@ int main (int argc, char *argv[]){
 		pdpa1->tree_debug();
 		pdpa1->simu_anneal();
 		pdpa1->tree_debug();
-
 	}
 }

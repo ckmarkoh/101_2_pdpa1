@@ -103,12 +103,25 @@ public:
    }
 
    void random_rotate(){
+   		cout<<"print0"<<endl;
+   		print(0,1);
    		int i=0;
 		while((! _container.rotate(_rnGen(unsigned(_container.size()-1)),bool(_rnGen(unsigned(2))) ) )&&(i++<10));
+   		cout<<"print1"<<endl;
+		print(0,1);
    }
 	
    void random_neighbor(){//BUG
-   	_backup_container=_container;
+   	if(_setted_size!=getContainerSize()){
+		cout<<"print3"<<endl;
+		print(0,1);
+		_container=_backup_container;
+		cout<<"print4"<<endl;
+		print(0,1);
+		assert(0);
+	}
+	container_backup();
+   	//_backup_container=_container;
 	assert(_setted_size==getContainerSize());
 	if(bool(_rnGen(unsigned(2)))){
 		//		cout<<"random_rotate"<<endl;
@@ -119,13 +132,20 @@ public:
 	//	random_exchange();
 		random_rotate();
 	}
+		cout<<"print2"<<endl;
+		print(0,1);
 	assert(_setted_size==getContainerSize());
    }//BUG
 
-	void restore_backup(){
+	void restore_backup(){//TODO
+		_container.clear();
 		_container=_backup_container;
 	}
-	   BSTree<BSTreeObj>::iterator getPos(size_t pos) {
+	void container_backup(){//TODO
+		_backup_container.clear();
+		_backup_container=_container;
+	}
+   BSTree<BSTreeObj>::iterator getPos(size_t pos) {
          size_t i = 0;
          BSTree<BSTreeObj>::iterator li = _container.begin();
          BSTree<BSTreeObj>::iterator lj = _container.end();

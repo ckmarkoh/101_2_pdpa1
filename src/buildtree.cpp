@@ -34,13 +34,15 @@ void PDPA1::simu_anneal(){
 	float tempture=T;
 	while((tempture*=R)>FROZEN){
 		float origin_cost=_treemgr.getCost();
+		cout<<"before random_neighbor"<<endl;
 		_treemgr.random_neighbor();
+		cout<<"after random_neighbor"<<endl;
 		float delta_cost=_treemgr.getCost()-origin_cost;
 		if(delta_cost>0){
-	//			cout<<"temperature:"<<tempture<<endl;
-	//			cout<<"delta_cost:"<<delta_cost<<endl;
+				cout<<"temperature:"<<tempture<<endl;
+				cout<<"delta_cost:"<<delta_cost<<endl;
 			if(_treemgr.getRandom( pow(E,(delta_cost/tempture)) ) >= 1.0){
-	//			cout<<"  restore"<<endl;
+				cout<<"  restore"<<endl;
 				_treemgr.restore_backup();
 			}
 		}
