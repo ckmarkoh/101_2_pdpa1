@@ -12,6 +12,7 @@
 #include <cassert>
 #include <iostream>
 #include <iomanip>
+#include <queue>
 using namespace std;
 
 template <class T> class BSTree;
@@ -124,14 +125,12 @@ friend class iterator;
    };
 
    // TODO: implement these functions
-  	BSTree<T>& operator = (const BSTree<T>& t) 
-	{
-	cout<<"overloaded assign"<<endl;
-	//_node = i._node;
-	 return *(this); 
-	}
+
+
 	iterator root()
-		{return iterator(_root);}
+		{return iterator(this->_root);}
+	iterator root() const
+		{return iterator(this->_root);}
 
    iterator begin() const 
      { 
@@ -530,7 +529,9 @@ template <class T>
 
 template <class T>
    void BSTree<T>::print() {
-		Recprint(_root,0);   
+   		if(_size>0){
+			Recprint(_root,0);   
+		}
    }
 template <class T>
    void BSTree<T>::Recprint(BSTreeNode<T>* t, size_t level ) {
@@ -587,19 +588,19 @@ template <class T>
    	}
 template <class T>
    bool BSTree<T>::rightRot(BSTreeNode<T>* x ) {
-   		cout<<"rotate:x="<<x->_data<<endl;
+   	//	cout<<"rotate:x="<<x->_data<<endl;
 	   if( (x!=_eNode) && (x->_left!=0)){
 			BSTreeNode<T>* y=x->_left;
-			cout<<"rotate:y="<<y->_data<<endl;
+	//		cout<<"rotate:y="<<y->_data<<endl;
 			if(x!=_root){
-				cout<<"2-1"<<endl;
+	//			cout<<"2-1"<<endl;
 				BSTreeNode<T>* p=x->_pare;
 				if(p->_right==x){
-					cout<<"2-2-1"<<endl;//OK
+	//				cout<<"2-2-1"<<endl;//OK
 					p->_right=y;
 				}
 				else if(p->_left==x){
-					cout<<"2-2-2"<<endl;//OK
+	//				cout<<"2-2-2"<<endl;//OK
 					p->_left=y;
 				}
 				else{
@@ -607,22 +608,22 @@ template <class T>
 				}
 				y->_pare=p;
 			}else{
-				cout<<"2-2"<<endl;//OK
+	//			cout<<"2-2"<<endl;//OK
 				_root=y;
 				y->_pare=0;
 			}
 			BSTreeNode<T>* l=y->_right;
 			if(l!=0){
-				cout<<"2-3"<<endl;
+	//			cout<<"2-3"<<endl;
 				l->_pare=x;
 			}
-			cout<<"2-4"<<endl;//OK
+	//		cout<<"2-4"<<endl;//OK
 			x->_left=l;
 			x->_pare=y;
 			y->_right=x;
-			cout<<"x->_pare="<<x->_pare->_data<<endl;
+	//		cout<<"x->_pare="<<x->_pare->_data<<endl;
 			//cout<<"y->_pare="<<y->_pare->_data<<endl;
-			cout<<"_root="<<_root->_data<<endl;
+	//		cout<<"_root="<<_root->_data<<endl;
 			return true;
 		}
 		else{
@@ -637,7 +638,7 @@ template <class T>
 template <class T>
 bool BSTree<T>::rotate(size_t id,bool right ){
    iterator pos=begin();
-   cout<<"id:"<<id<<endl;
+   //cout<<"id:"<<id<<endl;
    	if(id>=size()){
 		id=size()-1;
 	}
@@ -645,12 +646,12 @@ bool BSTree<T>::rotate(size_t id,bool right ){
 		pos++;
 	}
 	if(!right){
-		cout<<"1-0"<<endl;
+	//	cout<<"1-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
 		return leftRot(pos._node);
 	}
 	else{
-		cout<<"2-0"<<endl;
+	//	cout<<"2-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
 		return rightRot(pos._node);
 	}
