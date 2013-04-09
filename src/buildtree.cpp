@@ -13,16 +13,24 @@ void PDPA1::tree_debug(){
 	_treemgr.print(0,1);
 }
 void PDPA1::build_tree(){
+	float mincost=0;
+
 	assert(_block.size()>=3);
+	mincost+=float(_block[1]->area());
+	mincost+=float(_block[2]->area());
+	mincost+=float(_block[3]->area());
 	_treemgr.insert(float(_block.size())*0.5,_block[0]);
 	_treemgr.insert(float(_block.size())*0.25,_block[1]);
 	_treemgr.insert(float(_block.size())*0.75,_block[2]);
 	for(size_t i=3;i<_block.size();i++){
 		//_treemgr.insert(float(_block.size()),_block[i],1);
-
-		_treemgr.insert(_block.size(),_block[i],1);
+		mincost+=float(_block[i]->area());
+		while(!_treemgr.insert(_block.size(),_block[i],1));
 	}
-	
+	mincost=(mincost*2);
+	_treemgr.setMinCost(mincost);
+	_treemgr.get_block_pos();
+//	_treemgr.test_yheight();	
 //	tree_debug();
 /*	for(size_t i=0;i<5;i++){
 		cout<<"tree1:"<<i<<endl;
@@ -73,5 +81,4 @@ void PDPA1::simu_anneal(){
 		}
 	}
 }
-
 

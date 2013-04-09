@@ -632,7 +632,7 @@ template <class T>
 		}
 		else{
 			return false;
-			cout<<"2-5"<<endl;//OK
+		//	cout<<"2-5"<<endl;//OK
 		}
    	}
 
@@ -655,12 +655,12 @@ template <class T>
 bool BSTree<T>::rotate(iterator pos,bool right ){
 
 	if(!right){
-		cout<<"1-0"<<endl;
+	//	cout<<"1-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
 		return leftRot(pos._node);
 	}
 	else{
-		cout<<"2-0"<<endl;
+		//cout<<"2-0"<<endl;
 		//cout<<"pos._node.data"<<pos._node->_data<<endl;
 		return rightRot(pos._node);
 	}

@@ -26,6 +26,22 @@ public:
 	string get_name(){
 		return _name;	
 	}
+	void setX(unsigned x){
+		_x=x;
+	}
+	void setY(unsigned y){
+		_y=y;
+	}
+	void setXY(unsigned x,unsigned y){
+		_x=x;
+		_y=y;
+	}
+	unsigned getX(){
+		return _x;
+	}
+	unsigned getY(){
+		return _y;
+	}
 
 protected:
 	vector<Net*> _nt; //net
@@ -48,6 +64,18 @@ public:
 	unsigned area(){
 		return _w*_h;
 	}
+	unsigned getW(){
+		return _w;
+	}
+	unsigned getH(){
+		return _h;
+	}
+	/*void setW(unsigned w){
+		_w=w;
+	}
+	void setH(unsigned h){
+		_h=h;
+	}*/
 /*	void print(){
 		//cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<< _y<<" _h"<<h<<"_w"<<w<<endl;
 		cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<<_y<<endl;//<< _y<<" _h"<<h<<"_w"<<w<<endl;

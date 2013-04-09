@@ -9,8 +9,10 @@ int main (int argc, char *argv[]){
 	//	pdpa1->parser_debug(1,0,0);	
 		pdpa1->build_tree();
 	//	pdpa1->parser_debug(1,0,0);
+		pdpa1->draw_block("file1.raw");
 		pdpa1->tree_debug();
 		pdpa1->simu_anneal();
 		pdpa1->tree_debug();
+		pdpa1->draw_block("file2.raw");
 	}
 }

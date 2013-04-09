@@ -39,6 +39,7 @@ public:
 	void build_tree();
 	void tree_debug();
 	void simu_anneal();
+	void draw_block(char* filename);
 private:
 	unsigned* _outline;
 	vector<Block*> _block;
