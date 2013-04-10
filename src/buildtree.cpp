@@ -6,7 +6,10 @@
 #define E 2.71828182845
 #define R 0.9999
 #define T 1000
-#define FROZEN 0.00002
+#define FROZEN 0.0002
+
+//#define FROZEN 0.0002
+//#define R 0.9999
 using namespace std;
 void PDPA1::tree_debug(){
 	cout<<"cost:"<<_treemgr.getCost()<<endl;
@@ -16,6 +19,10 @@ void PDPA1::tree_debug(){
 
 
 void PDPA1::build_tree(){
+	cout<<"E:"<<E<<endl;
+	cout<<"R:"<<R<<endl;
+	cout<<"T:"<<T<<endl;
+	cout<<"FROZEN"<<FROZEN<<endl;
 	float min_block_cost=0;
 	float min_net_cost=0;
 	float min_pos_cost=0;
@@ -38,21 +45,8 @@ void PDPA1::build_tree(){
 	_treemgr.setMinCost(min_block_cost,min_net_cost,min_pos_cost,_outline[0],_outline[1]);
 	_treemgr.get_block_cost();
 	_treemgr.setNetVec(_net);
-//	_treemgr.test_yheight();	
-//	tree_debug();
-/*	for(size_t i=0;i<5;i++){
-		cout<<"tree1:"<<i<<endl;
-		tree_debug();
-		_treemgr.random_neighbor();
-		cout<<"tree2:"<<i<<endl;
-		tree_debug();
-		_treemgr.restore_backup();
-		cout<<"tree3:"<<i<<endl;
-		tree_debug();
-	}
-	simu_anneal();
-		cout<<"tree1"<<endl;
-		tree_debug();*/
+
+//	_treemgr.test_unbalanced();
 /*
 		cout<<"tree1"<<endl;
 		tree_debug();
@@ -69,7 +63,18 @@ void PDPA1::build_tree(){
 //		tree_debug();
 		
 //	tree_debug();
+/*
+		draw_block("file1.raw");
+		_treemgr.getCost();
+		for(size_t i=1;i<100000;i++){
+			_treemgr.smart_exchange_rotate();
+		}
+		_treemgr.getCost();
+		draw_block("file2.raw");*/
 }
+
+
+
 void PDPA1::simu_anneal(){
 	unsigned times=0;
 	_treemgr.printCost();

@@ -137,6 +137,76 @@ public:
 		(*it).swap_block(*it2);
 	}
 
+	bool smart_exchange_rotate(){
+		if(_rnGen(unsigned(4))>1){return false;}
+		size_t s = _container.size();
+		BSTree<BSTreeObj>::iterator it =getPos(_rnGen(unsigned(s)));
+		Block* b=(*it).getBlock();
+		assert(it!=_container.end());
+		size_t j=0;
+		while(true){
+			if( !b->inRange(unsigned(_min_box_x),unsigned(_min_box_y)) ){//cout<<"1"<<endl;
+				BSTree<BSTreeObj>::iterator it2 =getPos(_rnGen(unsigned(s)));	
+				Block* b2=(*it2).getBlock();
+				size_t i=0;
+				while(! (b2->inRange(unsigned(_min_box_x),unsigned(_min_box_y)) && (  b2->area() <= b->area()   )) ){//cout<<"2"<<endl;
+
+					it2 =getPos(_rnGen(unsigned(s)));
+					b2=(*it2).getBlock();
+					if(i++>s){
+						if(b2->inRange(unsigned(_min_box_x),unsigned(_min_box_y))){
+							float id=(*it2).getId();
+							 if (_container.erase(it)){
+								do{
+									if(_rnGen(unsigned(6))%2==0){
+										id*=1.01;
+									}else{
+										id*=0.99;
+									}
+								}while(!insert(id,b,0 ));//cout<<"1"<<endl;}
+							 }else{
+								assert(0);
+							}
+							return true;
+						}
+						return false;
+					}
+				}
+				if(b->lie_or_stand()!=b2->lie_or_stand()){
+					backuped_rotate(b);
+					backuped_rotate(b2);
+				}
+					assert(it!=_container.end());
+					//cout<<"swap"<<endl;
+					(*it).swap_block(*it2);
+				return true;
+
+			}
+			if(j++>s){
+				return false;
+			}
+			it=getPos(_rnGen(unsigned(s)));
+			b=(*it).getBlock();
+		}
+		return false;
+	}
+
+	void test_unbalanced(){
+		vector<unsigned> tv;
+		unsigned s=_container.size();
+		for(size_t i=0;i<s;i++){
+			tv.push_back(0);
+		}
+		unsigned j=0;
+		while(j++<1000){
+			unsigned id=_rnGen(s,1);
+			tv[id]++;
+		}
+		for(size_t i=0;i<s;i++){
+			cout<<"i:"<<i<<" tv:"<<tv[i]<<endl;
+		}
+	}
+
    void print(bool reverse = false, bool verbose = false) {
       if (verbose)
          _container.print();  // for BST only
@@ -149,6 +219,10 @@ public:
 			size_t id=_rnGen(unsigned(_container.size()));
 			BSTree<BSTreeObj>::iterator it =getPos(id);
 			Block* tempb=(*it).getBlock();
+			backuped_rotate(tempb);
+	}
+
+	void backuped_rotate(Block* tempb){
 			tempb->rotate();
 			_backup_block.push(tempb);
 	}
@@ -187,31 +261,37 @@ public:
 	
    void random_neighbor(){//BUG
 		container_backup();
-		unsigned hasdo=0;
+
+/*		for(size_t i=0;i<10;i++){
+			smart_exchange_rotate();
+		}*/
+		if(!smart_exchange_rotate()){
+			unsigned hasdo=0;
 		
-		while(hasdo<=0){
-			if((_rnGen(unsigned(12)))%4  == 0){
-		//		cout<<"random_exchange"<<endl;
-				_random_state=EXCHANGE_TREE;
-				random_exchange();
-				hasdo++;
-			}
-			if((_rnGen(unsigned(12)))%4==1){
-		//		cout<<"random_rotate"<<endl;
-				_random_state=ROTATE_TREE;
-				random_rotate();
-				hasdo++;
-			}
-			if((_rnGen(unsigned(12)))%4==2){
-		//		cout<<"random_exchange_block"<<endl;
-				_random_state=EXCHANGE_BLOCK;
-				random_exchange_block();
-				hasdo++;
-			}
-			if((_rnGen(unsigned(12)))%4== 3){
-		//		cout<<"random_rotate_block"<<endl;
-					_random_state=ROTATE_BLOCK;
-					random_rotate_block();	
+			while(hasdo<=0){
+				if((_rnGen(unsigned(12)))%4  == 0){
+			//		cout<<"random_exchange"<<endl;
+					_random_state=EXCHANGE_TREE;
+					random_exchange();
+					hasdo++;
+				}
+				if((_rnGen(unsigned(12)))%4==1){
+			//		cout<<"random_rotate"<<endl;
+					_random_state=ROTATE_TREE;
+					random_rotate();
+					hasdo++;
+				}
+				if((_rnGen(unsigned(12)))%4==2){
+			//		cout<<"random_exchange_block"<<endl;
+					_random_state=EXCHANGE_BLOCK;
+					random_exchange_block();
+					hasdo++;
+				}
+				if((_rnGen(unsigned(12)))%4== 3){
+			//		cout<<"random_rotate_block"<<endl;
+						_random_state=ROTATE_BLOCK;
+						random_rotate_block();	
+				}
 			}
 		}
    }//BUG
@@ -265,7 +345,7 @@ public:
          return li;
    }
 	//*OLD COST FUNCTION*//
-   float balanced_tree_cost(){
+/*   float balanced_tree_cost(){
    		
 		BSTree<BSTreeObj>::iterator it1=_container.root();
   		return balancedRecTraverse(it1,1); 
@@ -282,13 +362,10 @@ public:
 			cost+=balancedRecTraverse(it2,level+1);
 		 }
 		 return cost;
-   }
+   }*/
 	//*END OLD COST FUNCTION*//
 
-	void test_yheight(){
-		_yheight.insert(0,5,4);
-		_yheight.insert(5,9,2);
-	}
+		
 
 	void get_block_cost(){
 		_yheight.clear();

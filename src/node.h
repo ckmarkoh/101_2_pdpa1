@@ -43,10 +43,10 @@ public:
 		return _y;
 	}
 	unsigned getPosX(){
-		return getX();
+		return _x;
 	}
 	unsigned getPosY(){
-		return getY();
+		return _y;
 	}
 protected:
 	vector<Net*> _nt; //net
@@ -76,10 +76,16 @@ public:
 		return _h;
 	}
 	unsigned getPosX(){
-		return getX()+(getW()/2);
+		return _x+(_w/2);
 	}
 	unsigned getPosY(){
-		return getY()+(getH()/2);
+		return _y+(_h/2);
+	}
+	bool inRange(unsigned x,unsigned y){
+		return ( ((_x+_w)<x) && ((_y+_h)<y) ); 
+	}
+	bool lie_or_stand(){
+		return (_w/_h) > 1;
 	}
 	/*void setW(unsigned w){
 		_w=w;
