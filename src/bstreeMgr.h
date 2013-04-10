@@ -138,7 +138,7 @@ public:
 	}
 
 	bool smart_exchange_rotate(){
-		if(_rnGen(unsigned(4))>1){return false;}
+		if(_rnGen(unsigned(8))>1){return false;}
 		size_t s = _container.size();
 		BSTree<BSTreeObj>::iterator it =getPos(_rnGen(unsigned(s)));
 		Block* b=(*it).getBlock();
@@ -387,6 +387,20 @@ public:
 		 }
 	}
 
+
+	float get_penalty(){
+		float tempp=0;
+		  //size_t idx = 0;
+		  BSTree<BSTreeObj>::iterator li = _container.begin();
+		  for (; li != _container.end(); ++li){
+			 	if(! (*li).getBlock()->inRange(unsigned(_min_box_x),unsigned(_min_box_y)) ){
+			 		tempp++;	
+				}
+			 }
+
+		return tempp/_container.size();
+	}
+
 	float getCost(){
 		get_block_cost();
 		//balanced_tree_cost();
@@ -395,7 +409,7 @@ public:
 		float block_x=float(_yheight.find_max_x());
 		float block_y=float(_yheight.find_max(0,unsigned(block_x)));
 		 block_cost=block_x*block_y;
-		 penalty=pow((block_x/block_y)-1,2); 
+		 penalty=pow((block_x/block_y)-1,2)+get_penalty(); 
 		 net_cost=get_net_cost();
 		 pos_cost=get_pos_cost();
 //		cout<<"block_cost:"<<block_cost<<" normalize:"<<(block_cost/_min_block_cost)<<" x:"<<block_x<<" y:"<<block_y<<endl;
@@ -403,7 +417,7 @@ public:
 //		cout<<"penalty:"<<penalty<<endl;
 
 		cn=
-		COST_NORMALIZE*( (block_cost/_min_block_cost)+(net_cost/_min_net_cost)*0+(pos_cost/_min_pos_cost)*0 + penalty*10)/3  ;
+		COST_NORMALIZE*( (block_cost/_min_block_cost)+(net_cost/_min_net_cost)*0+(pos_cost/_min_pos_cost)*0.01 + penalty*10)/3  ;
 //		cout<<"normalize cost:"<<cn<<endl;
 	/*	if(_rnGen(unsigned(1200))%1119==1){
 			cn=0;
