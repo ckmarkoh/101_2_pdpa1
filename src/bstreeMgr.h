@@ -39,8 +39,8 @@ public:
    bool operator == (const BSTreeObj& o) const { return (_id == o._id); }
 //   static void setLen(int len) { _idLen = len; }
    friend ostream& operator << (ostream& os, const BSTreeObj& o){
-//	   return (os << "id:"<<o._id<<" name:"<<o._b->get_name() );
-	   return (os <<o._b->get_name() );
+	   return (os << "id:"<<o._id<<" name:"<<o._b->getName()<<" w:"<<o._b->getW()<<" h:"<<o._b->getH() );
+	  // return (os <<o._b->getName() );
    }
    Block* getBlock(){return _b;}
    void setID(float i){_id=i;}
@@ -61,7 +61,7 @@ public:
 	BSTreeMgr(){
 //		_container= new BSTree<BSTreeObj>();
 		//_backup_container= new BSTree<BSTreeObj>();
-		_mincost=0;
+		//_mincost=0;
 		_backup_block=0;
 	}
 
@@ -86,8 +86,9 @@ public:
 			return false;
 	   }
    }
-	void setMinCost(float c){
-		_mincost=c;
+	void setMinCost(float b,float n){
+		_min_block_cost=b;
+		_min_net_cost=n;
 	}
 	void random_exchange() {
 		container_backup();
@@ -220,22 +221,23 @@ public:
          return li;
    }
 	//*OLD COST FUNCTION*//
-   void balanced_tree_cost(){
-   		_cost=0;
+   float balanced_tree_cost(){
+   		
 		BSTree<BSTreeObj>::iterator it1=_container.root();
-  		balancedRecTraverse(it1,1); 
+  		return balancedRecTraverse(it1,1); 
    }
-   void balancedRecTraverse(BSTree<BSTreeObj>::iterator& it,float level){
+   float balancedRecTraverse(BSTree<BSTreeObj>::iterator& it,float level){
 		 BSTree<BSTreeObj>::iterator it1 = it;
 		 BSTree<BSTreeObj>::iterator it2 = it;
-		 _cost+=level*level;
+		 float cost=level*level;
 	//	 cout<<setw((int)level)<<level<<":"<<*it<<endl;
 		 if(it1.to_left_child()){
-			balancedRecTraverse(it1,level+1);
+			cost+=balancedRecTraverse(it1,level+1);
 		 }
 		 if(it2.to_right_child()){
-			balancedRecTraverse(it2,level+1);
+			cost+=balancedRecTraverse(it2,level+1);
 		 }
+		 return cost;
    }
 	//*END OLD COST FUNCTION*//
 
@@ -244,7 +246,7 @@ public:
 		_yheight.insert(5,9,2);
 	}
 
-	void get_block_pos(){
+	void get_block_cost(){
 		_yheight.clear();
 		//unsigned xpos=0;
 		BSTree<BSTreeObj>::iterator it=_container.root();
@@ -265,16 +267,16 @@ public:
 	}
 
 	float getCost(){
-		get_block_pos();
+		get_block_cost();
 		//balanced_tree_cost();
 		//_cost=float(_yheight.find_max(0,_yheight.find_max_x())*_yheight.find_max_x());
-		_cost=pow(float(_yheight.find_max(0,_yheight.find_max_x())),2);
-		_cost+=pow(_yheight.find_max_x(),2);
+		float block_cost=pow(float(_yheight.find_max(0,_yheight.find_max_x())),2)+pow(_yheight.find_max_x(),2);
+		float net_cost=get_net_cost();
+		cout<<"block_cost:"<<block_cost<<endl;
+		cout<<"net_cost:"<<net_cost<<endl;
+		//cout<<"mincost:"<<_mincost<<endl;
 
-		cout<<"cost"<<_cost<<endl;
-		cout<<"mincost"<<_mincost<<endl;
-
-		float cn=COST_NORMALIZE *(_cost/_mincost);
+		float cn=COST_NORMALIZE *0.5*( (block_cost/_min_block_cost)+(net_cost/_min_net_cost)  );
 		cout<<"normalize cost:"<<cn<<endl;
 		return cn;
 	}
@@ -285,16 +287,36 @@ public:
 /*	void setSize(size_t s){
 		_setted_size=s;
 	}*/
+	void setNetVec(vector<Net* >& nv){
+		_netvec.clear();
+		for(size_t i=0;i<nv.size();i++){
+		_netvec.push_back(nv[i]);
+		}
+	}
+	
+	float get_net_cost(){
+		float cost=0;
+		for(size_t i=0; i<_netvec.size();i++){
+//			cout<<"get_net_cost"<<cost<<endl;
+			cost+=float(_netvec[i]->getLength());
+		}
+		return cost;
+	}
+
 private:
    BSTree<BSTreeObj>   _container;
    //BSTree<BSTreeObj>*  _backup_container;
 		
 	YHeight _yheight;	
-	float _cost;
+//	float _cost;
 //	size_t _setted_size;
-	float _mincost;
-
+	float _min_block_cost;
+	float _min_net_cost;	
    vector<BSTreeObj> _backup_vec; // EXCHANGE BACKUP
+	
+	vector<Net*> _netvec;
+
+	
 
 	bool _backup_right; //ROTATE TREE BACKUP
 	BSTree<BSTreeObj>::iterator _backup_it; //ROTATE BACKUP 

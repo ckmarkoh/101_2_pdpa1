@@ -23,7 +23,7 @@ public:
 	void print(){
 		cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<< _y<<endl;
 	}
-	string get_name(){
+	string getName(){
 		return _name;	
 	}
 	void setX(unsigned x){
@@ -42,7 +42,12 @@ public:
 	unsigned getY(){
 		return _y;
 	}
-
+	unsigned getPosX(){
+		return getX();
+	}
+	unsigned getPosY(){
+		return getY();
+	}
 protected:
 	vector<Net*> _nt; //net
 	string _name; //name
@@ -70,6 +75,12 @@ public:
 	unsigned getH(){
 		return _h;
 	}
+	unsigned getPosX(){
+		return getX()+(getW()/2);
+	}
+	unsigned getPosY(){
+		return getY()+(getH()/2);
+	}
 	/*void setW(unsigned w){
 		_w=w;
 	}
@@ -96,9 +107,24 @@ public:
 	void print(){
 		cout<<"net:"<<_tm.size()<<endl;;
 		for(size_t i=0;i<_tm.size();i++){
-			cout<<_tm[i]->get_name()<<" ";		
+			cout<<_tm[i]->getName()<<" ";		
 		}
 		cout<<endl;
+	}
+	unsigned getLength(){
+		unsigned min_x=_tm[0]->getPosX();
+		unsigned min_y=_tm[0]->getPosY();
+		unsigned max_x=_tm[0]->getPosX();
+		unsigned max_y=_tm[0]->getPosY();
+		assert(_tm.size()>1);
+		for(size_t i=1;i<_tm.size();i++){
+			min_x = ( min_x >_tm[i]->getPosX() ) ? _tm[i]->getPosX()	: min_x	;
+			min_y = ( min_y >_tm[i]->getPosY() ) ? _tm[i]->getPosY()	: min_y	;
+			max_x = ( max_x <_tm[i]->getPosX() ) ? _tm[i]->getPosX()	: max_x	;
+			max_y = ( max_y <_tm[i]->getPosY() ) ? _tm[i]->getPosY()	: max_y	;
+		}
+		//cout<<"return cost:"<<(max_x-min_x)+(max_y-min_y)<< endl;
+		return (max_x-min_x)+(max_y-min_y);
 	}
 private:
 	vector<Terminal*> _tm;

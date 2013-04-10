@@ -289,7 +289,7 @@ void PDPA1::parser_debug(bool b,bool t,bool n){
 template <class T> size_t 
 PDPA1::vector_find(vector<T*>& v,string e ){
 	for(size_t i=0;i< v.size();i++){
-		if(v[i]->get_name()==e){
+		if(v[i]->getName()==e){
 			return i;	
 		}
 	}
