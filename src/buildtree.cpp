@@ -4,7 +4,7 @@
 #include<iostream>
 #include <math.h>
 #define E 2.71828182845
-#define R 0.9999
+#define R 0.9997
 #define T 1000
 #define FROZEN 0.0002
 
