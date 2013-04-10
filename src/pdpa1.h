@@ -15,6 +15,7 @@
 #include"bstree.h"
 #include"bstreeMgr.h"
 #include"node.h"
+#include"myUsage.h"
 using namespace std;
 
 
@@ -41,6 +42,7 @@ public:
 	void simu_anneal();
 	void draw_block(char* filename);
 private:
+	MyUsage _myusage;
 	unsigned* _outline;
 	vector<Block*> _block;
 	vector<Terminal*> _terminal;

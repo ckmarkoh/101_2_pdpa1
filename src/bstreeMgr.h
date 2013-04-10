@@ -16,6 +16,7 @@
 #include "node.h"
 #include "rnGen.h"
 #include "yheight.h"
+#include <queue>
 #define COST_NORMALIZE 600
 using namespace std;
 
@@ -44,6 +45,13 @@ public:
    }
    Block* getBlock(){return _b;}
    void setID(float i){_id=i;}
+	
+   void swap_block(BSTreeObj& tobj){
+		Block* temp =tobj._b;
+		tobj._b=this->_b;
+		this->_b=temp;
+   }
+
 	float getId(){return _id;}
 private:
    float      _id;  // _data should alywas be between [0, _dataRange - 1]
@@ -62,7 +70,6 @@ public:
 //		_container= new BSTree<BSTreeObj>();
 		//_backup_container= new BSTree<BSTreeObj>();
 		//_mincost=0;
-		_backup_block=0;
 	}
 
 
@@ -86,27 +93,50 @@ public:
 			return false;
 	   }
    }
-	void setMinCost(float b,float n){
+	void setMinCost(float b,float n,float p,float bx=10000, float by=10000){
 		_min_block_cost=b;
 		_min_net_cost=n;
+		_min_pos_cost=p;
+		_min_box_x=bx;
+		_min_box_y=by;
+
+	 block_cost=0;
+	 net_cost=0;
+	 pos_cost=0;
+	 penalty=0;
+	 cn=0;
+
+
 	}
 	void random_exchange() {
-		container_backup();
+		//container_backup();
 		size_t s = _container.size();
 		assert(s>1);
 		size_t pos = _rnGen(unsigned(s));
 		BSTree<BSTreeObj>::iterator it =getPos(pos);
+		
 		Block* b = (*it).getBlock();
 		 if (_container.erase(it)){
-			while(!insert(s,b,1 )){cout<<"1"<<endl;}
+			while(!insert(s,b,1 )){}//cout<<"1"<<endl;}
 		 }else{
-		// 	print();
-		//	cout<<"pos:"<<pos<<endl;
-			//cout<<"it:"<<*it<<endl;
-		 //	_container.print();
 		 	assert(0);
 		}
 	}
+	void random_exchange_block() {
+		//container_backup();
+		size_t s = _container.size();
+		assert(s>1);
+		BSTree<BSTreeObj>::iterator it =getPos(_rnGen(unsigned(s)));
+		BSTree<BSTreeObj>::iterator it2 =getPos(_rnGen(unsigned(s)));
+		while(! ((it!=_container.end())&&(it2!=_container.end())&&(it!=it2)) ){
+			it =getPos(_rnGen(unsigned(s)));
+			it2 =getPos(_rnGen(unsigned(s)));
+		}
+		//cout<<"swap:"<<*it<<endl;
+		//cout<<"swap:"<<*it2<<endl;
+		(*it).swap_block(*it2);
+	}
+
    void print(bool reverse = false, bool verbose = false) {
       if (verbose)
          _container.print();  // for BST only
@@ -118,12 +148,13 @@ public:
 	void random_rotate_block(){
 			size_t id=_rnGen(unsigned(_container.size()));
 			BSTree<BSTreeObj>::iterator it =getPos(id);
-			_backup_block=(*it).getBlock();
-			_backup_block->rotate();
+			Block* tempb=(*it).getBlock();
+			tempb->rotate();
+			_backup_block.push(tempb);
 	}
    void random_rotate(){
    		//cout<<"rotate"<<endl;
-		container_backup();
+		//container_backup();
 		size_t z=0;
 		while(true){
 			size_t id=_rnGen(unsigned(_container.size()));
@@ -155,20 +186,33 @@ public:
    
 	
    void random_neighbor(){//BUG
-		if((_rnGen(unsigned(12)))%3==0){
-			cout<<"random_exchange"<<endl;
-			_random_state=EXCHANGE;
-			random_exchange();
-		}
-		else if((_rnGen(unsigned(12)))%3==1){
-			cout<<"random_rotate"<<endl;
-			_random_state=ROTATE_TREE;
-			random_rotate();
-		}
-		else{
-			cout<<"random_rotate_block"<<endl;
-			_random_state=ROTATE_BLOCK;
-			random_rotate_block();	
+		container_backup();
+		unsigned hasdo=0;
+		
+		while(hasdo<=0){
+			if((_rnGen(unsigned(12)))%4  == 0){
+		//		cout<<"random_exchange"<<endl;
+				_random_state=EXCHANGE_TREE;
+				random_exchange();
+				hasdo++;
+			}
+			if((_rnGen(unsigned(12)))%4==1){
+		//		cout<<"random_rotate"<<endl;
+				_random_state=ROTATE_TREE;
+				random_rotate();
+				hasdo++;
+			}
+			if((_rnGen(unsigned(12)))%4==2){
+		//		cout<<"random_exchange_block"<<endl;
+				_random_state=EXCHANGE_BLOCK;
+				random_exchange_block();
+				hasdo++;
+			}
+			if((_rnGen(unsigned(12)))%4== 3){
+		//		cout<<"random_rotate_block"<<endl;
+					_random_state=ROTATE_BLOCK;
+					random_rotate_block();	
+			}
 		}
    }//BUG
 
@@ -195,24 +239,24 @@ public:
 		}
 	}
 	void restore_backup(){
-		
-		if( (_random_state==EXCHANGE) || (_random_state==ROTATE_TREE)){
-			cout<<"restore exchange"<<endl;
+		restore_container();
+		restore_block();
+	}
+
+	void restore_container(){
 			_container.clear();	
 			for(size_t i=0;i<_backup_vec.size();i++){
 				insert(_backup_vec[i].getId(),_backup_vec[i].getBlock(),0);
 			}
-		}
-		else if(_random_state==ROTATE_BLOCK){
-			assert(_backup_block);
-			_backup_block->rotate();
-			_backup_block=0;
-		}
-		else{
-			assert(0);
-		}
 	}
-
+	void restore_block(){
+			while(_backup_block.size()>0){
+				_backup_block.front()->rotate();
+				_backup_block.pop();
+			}
+			
+	}
+	
    BSTree<BSTreeObj>::iterator getPos(size_t pos) {
          size_t i = 0;
          BSTree<BSTreeObj>::iterator li = _container.begin();
@@ -270,15 +314,34 @@ public:
 		get_block_cost();
 		//balanced_tree_cost();
 		//_cost=float(_yheight.find_max(0,_yheight.find_max_x())*_yheight.find_max_x());
-		float block_cost=pow(float(_yheight.find_max(0,_yheight.find_max_x())),2)+pow(_yheight.find_max_x(),2);
-		float net_cost=get_net_cost();
-		cout<<"block_cost:"<<block_cost<<endl;
-		cout<<"net_cost:"<<net_cost<<endl;
-		//cout<<"mincost:"<<_mincost<<endl;
+		//float block_cost=pow(float(_yheight.find_max(0,_yheight.find_max_x())),2)+pow(_yheight.find_max_x(),2);
+		float block_x=float(_yheight.find_max_x());
+		float block_y=float(_yheight.find_max(0,unsigned(block_x)));
+		 block_cost=block_x*block_y;
+		 penalty=pow((block_x/block_y)-1,2); 
+		 net_cost=get_net_cost();
+		 pos_cost=get_pos_cost();
+//		cout<<"block_cost:"<<block_cost<<" normalize:"<<(block_cost/_min_block_cost)<<" x:"<<block_x<<" y:"<<block_y<<endl;
+//		cout<<"net_cost:"<<net_cost<<" normalize:"<<(net_cost/_min_net_cost)<<endl;
+//		cout<<"penalty:"<<penalty<<endl;
 
-		float cn=COST_NORMALIZE *0.5*( (block_cost/_min_block_cost)+(net_cost/_min_net_cost)  );
-		cout<<"normalize cost:"<<cn<<endl;
+		cn=
+		COST_NORMALIZE*( (block_cost/_min_block_cost)+(net_cost/_min_net_cost)*0+(pos_cost/_min_pos_cost)*0 + penalty*10)/3  ;
+//		cout<<"normalize cost:"<<cn<<endl;
+	/*	if(_rnGen(unsigned(1200))%1119==1){
+			cn=0;
+			cout<<"distrub"<<endl;
+		}*/
 		return cn;
+	}
+	
+	void printCost(){
+		cout<<"block_cost:"<<block_cost<<" normalize:"<<(block_cost/_min_block_cost)<<endl;
+		cout<<"net_cost:"<<net_cost<<" normalize:"<<(net_cost/_min_net_cost)<<endl;
+		cout<<"pos_cost:"<<pos_cost<<" normalize:"<<(pos_cost/_min_pos_cost)<<endl;
+		cout<<"penalty:"<<penalty<<endl;
+		cout<<"normalize cost:"<<cn<<endl;
+//		return cn;
 	}
 
 	float getRandom(float f){
@@ -293,7 +356,15 @@ public:
 		_netvec.push_back(nv[i]);
 		}
 	}
-	
+	float get_pos_cost() {
+		float pos_cost=0;
+		BSTree<BSTreeObj>::iterator li = _container.begin();
+		for (; li != _container.end(); li++){
+			pos_cost+=(*li).getBlock()->getPosX();
+			pos_cost+=(*li).getBlock()->getPosY();	
+		}
+		return pos_cost;
+	}
 	float get_net_cost(){
 		float cost=0;
 		for(size_t i=0; i<_netvec.size();i++){
@@ -312,18 +383,29 @@ private:
 //	size_t _setted_size;
 	float _min_block_cost;
 	float _min_net_cost;	
-   vector<BSTreeObj> _backup_vec; // EXCHANGE BACKUP
+	float _min_pos_cost;
+
+	float block_cost;
+	float net_cost;
+	float pos_cost;
+	float penalty;
+	float cn;
+
+	unsigned* _weight_random;
+
+   	vector<BSTreeObj> _backup_vec; // EXCHANGE_TREE BACKUP
 	
 	vector<Net*> _netvec;
-
-	
+	float _min_box_x;
+	float _min_box_y;
 
 	bool _backup_right; //ROTATE TREE BACKUP
 	BSTree<BSTreeObj>::iterator _backup_it; //ROTATE BACKUP 
-	Block* _backup_block;
+	queue<Block*> _backup_block;
 
 	enum {
-		EXCHANGE=0,
+		EXCHANGE_TREE=0,
+		EXCHANGE_BLOCK=0,
 		ROTATE_TREE,
 		ROTATE_BLOCK
 	}_random_state;

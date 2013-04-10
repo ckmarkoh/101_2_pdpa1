@@ -1,0 +1,89 @@
+SEED:1365601237
+min_block_cost:1.14567e+06
+min_net_cost:129513
+cost:511.43
+           [4] id:2.66662 name:bk3 w:133 h:315
+              [5] id:3.58562 name:bk17b w:182 h:203
+        [3] id:3.76699 name:bk9c w:357 h:119
+           [4] id:5.46013 name:bk14a w:196 h:119
+              [5] id:5.90135 name:bk19 w:84 h:119
+     [2] id:6.0681 name:bk1 w:336 h:133
+        [3] id:6.29377 name:bk14c w:161 h:119
+  [1] id:6.6 name:bk13 w:140 h:497
+        [3] id:7.23771 name:bk11 w:175 h:119
+           [4] id:7.35996 name:bk9d w:119 h:84
+     [2] id:8.40598 name:bk12 w:140 h:406
+                 [6] id:8.65204 name:bk9b w:119 h:119
+                    [7] id:8.82011 name:bk10c w:119 h:49
+              [5] id:8.84066 name:bk15a w:119 h:266
+           [4] id:12.4368 name:bk8a w:210 h:210
+              [5] id:13.951 name:bk5c w:133 h:231
+        [3] id:15.5572 name:bk21 w:315 h:140
+           [4] id:15.9171 name:bk5b w:175 h:133
+[0] id:16.5 name:bk4 w:560 h:133
+           [4] id:17.9615 name:bk18 w:182 h:203
+        [3] id:18.5499 name:bk15b w:119 h:336
+              [5] id:18.881 name:bk9a w:182 h:119
+           [4] id:22.2509 name:bk10b w:161 h:140
+     [2] id:22.6317 name:bk6 w:133 h:315
+        [3] id:24.1464 name:bk2 w:133 h:294
+           [4] id:24.4638 name:bk16 w:119 h:126
+  [1] id:26.4 name:bk17a w:371 h:182
+           [4] id:26.8003 name:bk5a w:133 h:140
+              [5] id:29.2632 name:bk7 w:182 h:98
+        [3] id:29.6507 name:bk8b w:126 h:378
+     [2] id:29.8771 name:bk20 w:182 h:350
+           [4] id:32.0439 name:bk14b w:294 h:119
+        [3] id:32.307 name:bk10a w:378 h:119
+=== ADT  ===
+
+block_cost:2.78932e+06 normalize:2.43467
+net_cost:166299 normalize:1.28403
+pos_cost:44904 normalize:0.322702
+penalty:0.0122483
+normalize cost:511.43
+times:177266
+Period time used : 251.3 seconds
+Total time used  : 251.3 seconds
+Total memory used: 6.5 M Bytes
+block_cost:1.759e+06 normalize:1.536
+net_cost:1.492e+05 normalize:1.152
+pos_cost:3.843e+04 normalize:0.2762
+penalty:0.0773
+normalize cost:461.7
+cost:217.5
+           [4] id:4.745 name:bk8b w:126 h:378
+        [3] id:8.026 name:bk18 w:182 h:203
+           [4] id:9.396 name:bk11 w:175 h:119
+     [2] id:9.922 name:bk2 w:133 h:294
+           [4] id:12 name:bk5c w:133 h:231
+        [3] id:13.18 name:bk21 w:315 h:140
+  [1] id:13.7 name:bk4 w:560 h:133
+[0] id:15.49 name:bk9b w:119 h:119
+              [5] id:15.51 name:bk9a w:182 h:119
+                 [6] id:15.97 name:bk1 w:336 h:133
+           [4] id:17.84 name:bk15a w:119 h:266
+                 [6] id:18.01 name:bk14c w:161 h:119
+              [5] id:19.15 name:bk14b w:294 h:119
+        [3] id:20.79 name:bk17a w:371 h:182
+              [5] id:21.14 name:bk17b w:182 h:203
+                 [6] id:21.48 name:bk7 w:182 h:98
+           [4] id:21.57 name:bk6 w:133 h:315
+     [2] id:21.73 name:bk12 w:140 h:406
+        [3] id:21.77 name:bk9d w:119 h:84
+  [1] id:22.41 name:bk10b w:161 h:140
+                 [6] id:26.75 name:bk5a w:133 h:140
+              [5] id:27 name:bk19 w:84 h:119
+                       [8] id:27.03 name:bk9c w:357 h:119
+                    [7] id:27.26 name:bk10c w:119 h:49
+                       [8] id:27.53 name:bk10a w:378 h:119
+                 [6] id:30.05 name:bk8a w:210 h:210
+           [4] id:30.45 name:bk20 w:182 h:350
+                 [6] id:30.58 name:bk5b w:175 h:133
+              [5] id:30.63 name:bk14a w:196 h:119
+        [3] id:30.82 name:bk16 w:119 h:126
+           [4] id:32 name:bk15b w:119 h:336
+     [2] id:32.16 name:bk13 w:140 h:497
+        [3] id:32.66 name:bk3 w:133 h:315
+=== ADT  ===
+
