@@ -4,11 +4,15 @@
 #include<iostream>
 #include <math.h>
 #define E 2.71828182845
-#define R 0.9997
-#define T 1000
-#define FROZEN 0.0002
 
-//#define FROZEN 0.0002
+#define R 0.995
+#define T 1000
+#define FROZEN 20
+
+#define RF 0.9999
+#define TF 100
+#define FROZENF 0.0002
+
 //#define R 0.9999
 using namespace std;
 void PDPA1::tree_debug(){
@@ -46,7 +50,7 @@ void PDPA1::build_tree(){
 	_treemgr.get_block_cost();
 	_treemgr.setNetVec(_net);
 
-//	_treemgr.test_unbalanced();
+	_treemgr.test_unbalanced();
 /*
 		cout<<"tree1"<<endl;
 		tree_debug();
@@ -81,6 +85,25 @@ void PDPA1::simu_anneal(){
 	_myusage.reset();
 	float tempture=T;
 	while((tempture*=R)>FROZEN){
+		times++;
+		float origin_cost=_treemgr.getCost();
+//		cout<<"before random_neighbor"<<endl;
+		_treemgr.random_neighbor();
+//		cout<<"after random_neighbor"<<endl;
+		float delta_cost=_treemgr.getCost()-origin_cost;
+		if(delta_cost>0){
+		//		cout<<"temperature:"<<tempture<<endl;
+		//		cout<<"delta_cost:"<<delta_cost<<endl;
+		//	cout<<"probability:"<<pow(E,(delta_cost/tempture))<<endl; 
+			if(_treemgr.getRandom( pow(E,(delta_cost/tempture)) ) >= 1.0){
+		//		cout<<"  restore"<<endl;
+				_treemgr.restore_backup();
+			}
+		}
+	}
+	
+	tempture=TF;
+	while((tempture*=RF)>FROZENF){
 		times++;
 		float origin_cost=_treemgr.getCost();
 //		cout<<"before random_neighbor"<<endl;

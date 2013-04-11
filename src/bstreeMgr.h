@@ -112,7 +112,7 @@ public:
 		//container_backup();
 		size_t s = _container.size();
 		assert(s>1);
-		size_t pos = _rnGen(unsigned(s));
+		size_t pos = _rnGen(unsigned(s),1);
 		BSTree<BSTreeObj>::iterator it =getPos(pos);
 		
 		Block* b = (*it).getBlock();
@@ -126,10 +126,10 @@ public:
 		//container_backup();
 		size_t s = _container.size();
 		assert(s>1);
-		BSTree<BSTreeObj>::iterator it =getPos(_rnGen(unsigned(s)));
+		BSTree<BSTreeObj>::iterator it =getPos(_rnGen(unsigned(s),1));
 		BSTree<BSTreeObj>::iterator it2 =getPos(_rnGen(unsigned(s)));
 		while(! ((it!=_container.end())&&(it2!=_container.end())&&(it!=it2)) ){
-			it =getPos(_rnGen(unsigned(s)));
+			it =getPos(_rnGen(unsigned(s),1));
 			it2 =getPos(_rnGen(unsigned(s)));
 		}
 		//cout<<"swap:"<<*it<<endl;
@@ -216,7 +216,7 @@ public:
       cout << endl;
    }
 	void random_rotate_block(){
-			size_t id=_rnGen(unsigned(_container.size()));
+			size_t id=_rnGen(unsigned(_container.size()),1);
 			BSTree<BSTreeObj>::iterator it =getPos(id);
 			Block* tempb=(*it).getBlock();
 			backuped_rotate(tempb);
@@ -231,7 +231,7 @@ public:
 		//container_backup();
 		size_t z=0;
 		while(true){
-			size_t id=_rnGen(unsigned(_container.size()));
+			size_t id=_rnGen(unsigned(_container.size()),1);
 			BSTree<BSTreeObj>::iterator it =getPos(id);
 			bool right=bool(_rnGen(unsigned(2))); 
 			//cout<<"id:"<<id<<endl;
@@ -458,10 +458,10 @@ public:
 	}
 	float get_net_cost(){
 		float cost=0;
-		for(size_t i=0; i<_netvec.size();i++){
+//		for(size_t i=0; i<_netvec.size();i++){
 //			cout<<"get_net_cost"<<cost<<endl;
-			cost+=float(_netvec[i]->getLength());
-		}
+//			cost+=float(_netvec[i]->getLength());
+//		}
 		return cost;
 	}
 
