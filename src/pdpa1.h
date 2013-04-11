@@ -38,10 +38,17 @@ public:
 	template <class T> size_t vector_find(vector<T*>& v,string e );//TODO
 	void sort_block();//TODO
 	void build_tree();
-	void tree_debug();
+	void tree_debug(const char* filename=0);
 	void simu_anneal();
-	void draw_block(char* filename);
+	bool simu_anneal_sub(float r,float t,float frozen);
+	void draw_block(const char* filename);
+	void test_tree_nrestsore();
+
+	void setImgName(string s){
+		_imgname=s;
+	}
 private:
+	string _imgname;
 	MyUsage _myusage;
 	unsigned* _outline;
 	vector<Block*> _block;
