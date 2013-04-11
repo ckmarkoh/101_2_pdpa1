@@ -2,7 +2,7 @@
 #include<iostream>
 using namespace std;
 
-void PDPA1::draw_block(char * filename){
+void PDPA1::draw_block(const char * filename){
 
 	string fname(filename);
 	ofstream fout(fname.c_str());

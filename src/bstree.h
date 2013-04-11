@@ -13,6 +13,8 @@
 #include <iostream>
 #include <iomanip>
 #include <queue>
+#include <fstream>
+
 using namespace std;
 
 template <class T> class BSTree;
@@ -160,7 +162,7 @@ friend class iterator;
 
    bool erase(const T& x) ;
    bool insert(const T& x); 
-   void print();// { }
+   void print(ostream& fout);// { }
    void clear(); 
 
 
@@ -191,7 +193,7 @@ private:
     BSTreeNode<T>* findMax(BSTreeNode<T>* t) ;
     BSTreeNode<T>* findSsc(BSTreeNode<T>* t) ;
 
-   void Recprint(BSTreeNode<T>* t, size_t level ); 
+   void Recprint(BSTreeNode<T>* t, size_t level,ostream& fout ); 
 };
 
 template <class T>
@@ -532,20 +534,20 @@ template <class T>
 
 
 template <class T>
-   void BSTree<T>::print() {
+   void BSTree<T>::print(ostream& fout) {
    		if(_size>0){
-			Recprint(_root,0);   
+			Recprint(_root,0,fout);   
 		}
    }
 template <class T>
-   void BSTree<T>::Recprint(BSTreeNode<T>* t, size_t level ) {
+   void BSTree<T>::Recprint(BSTreeNode<T>* t, size_t level ,ostream& fout) {
 	   if(t!=_eNode){
 			if( (t->_left != 0)&&(t->_left!=_eNode)) {
-				Recprint(t->_left,level+1);
+				Recprint(t->_left,level+1,fout);
 			}
 			cout<< setw(level*3)<<"["<<level<<"] "<< t->_data<<endl; 
 		   if( (t->_right != 0)&&(t->_right!=_eNode)) {
-				Recprint(t->_right,level+1);
+				Recprint(t->_right,level+1,fout);
 		   }
 	  }
    }

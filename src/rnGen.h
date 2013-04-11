@@ -16,8 +16,12 @@
 //#define SEED 1365591672
 #define my_srandom  srandom
 #define my_random   random
+//#define SEED 1365691387 //e2
+//#ifdef RSEED
 #define SEED time(0)
 //#define SEED 1365601237
+//#endif
+//#define SEED 1365691203
 //#define SEED 1365631505 //quick success
 
 //#define SEED 1365439588 //bug2 rotate+rotate
@@ -57,6 +61,7 @@ class RandomNumGen
 			 return unsigned(range * (double(my_random()) / INT_MAX));
       	}
 	  }
+	  static void change_seed(){my_srandom(my_random());}
 
 };
 
