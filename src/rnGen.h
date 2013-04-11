@@ -32,7 +32,7 @@ class RandomNumGen
    public:
    //   RandomNumGen() { my_srandom(getpid()); }
       RandomNumGen() { 
-		  cout<<"SEED:"<<SEED<<endl; 
+//		  cout<<"SEED:"<<SEED<<endl; 
 		  my_srandom(SEED); 
 	  }
       RandomNumGen(unsigned seed) { my_srandom(seed); }

@@ -96,12 +96,10 @@ public:
 			return false;
 	   }
    }
-	void setMinCost(float b,float n,float p,float bx=10000, float by=10000){
+	void setMinCost(float b,float n,float p){
 		_min_block_cost=b;
 		_min_net_cost=n;
 		_min_pos_cost=p;
-		_min_box_x=bx;
-		_min_box_y=by;
 
 	 block_cost=1;
 	 net_cost=1;
@@ -153,15 +151,15 @@ public:
 		assert(it!=_container.end());
 		size_t j=0;
 		while(true){
-			if( !b->inRange(unsigned(_min_box_x),unsigned(_min_box_y)) ){//cout<<"1"<<endl;
+			if( !b->inRange() ){//cout<<"1"<<endl;
 				BSTree<BSTreeObj>::iterator it2 =getPos(_rnGen(unsigned(s)));	
 				Block* b2=(*it2).getBlock();
 				size_t i=0;
-				while(! (b2->inRange(unsigned(_min_box_x),unsigned(_min_box_y)) && (  b2->area() <= b->area()   )) ){//cout<<"2"<<endl;
+				while(! (b2->inRange() && (  b2->area() <= b->area()   )) ){//cout<<"2"<<endl;
 					it2 =getPos(_rnGen(unsigned(s)));
 					b2=(*it2).getBlock();
 					if(i++>s){
-						if(b2->inRange(unsigned(_min_box_x),unsigned(_min_box_y))){
+						if(b2->inRange()){
 							float id=(*it2).getId();
 							 if (_container.erase(it)){
 								do{
@@ -396,8 +394,8 @@ public:
 		  //size_t idx = 0;
 		  BSTree<BSTreeObj>::iterator li = _container.begin();
 		  for (; li != _container.end(); ++li){
-			 	if(! (*li).getBlock()->inRange(unsigned(_min_box_x),unsigned(_min_box_y)) ){
-			 		tempp+=(*li).getBlock()->area();	
+			 	if(! (*li).getBlock()->inRange() ){
+			 		tempp+=float((*li).getBlock()->area_out());	
 				}
 			 }
 		return tempp/_min_block_cost;
@@ -413,7 +411,8 @@ public:
 		 block_cost=block_x*block_y;
 
 		block_penalty=get_penalty();
-		 penalty=pow((block_x/block_y)-1,2)+block_penalty; 
+	//	 penalty=pow((block_x/block_y)-(Block::B_Range_x/Block::B_Range_y),2)+block_penalty;
+		 penalty=block_penalty;
 		 net_cost=get_net_cost();
 		
 		pos_cost=get_pos_cost();
@@ -484,6 +483,23 @@ public:
 //		}
 		return cost;
 	}
+	void test_block_area(){
+		Block a2("a2",50,30,1200,1090);	
+		Block a3("a3",50,30,1200,500);	
+		Block a4("a4",50,30,500,1070);	
+		Block a5("a5",50,30,1500,500);	
+		Block a6("a5",50,30,500,1500);	
+		Block a7("a5",50,30,1500,1500);	
+
+		Block a8("a5",50,30,500,500);	
+		cout<<"a2"<<a2.area_out()<<endl;
+		cout<<"a3"<<a3.area_out()<<endl;
+		cout<<"a4"<<a4.area_out()<<endl;
+		cout<<"a5"<<a5.area_out()<<endl;
+		cout<<"a6"<<a6.area_out()<<endl;
+		cout<<"a7"<<a7.area_out()<<endl;
+		cout<<"a8"<<a8.area_out()<<endl;
+	}
 
 private:
    BSTree<BSTreeObj>   _container;
@@ -508,8 +524,6 @@ private:
    	vector<BSTreeObj> _backup_vec; // EXCHANGE_TREE BACKUP
 	
 	vector<Net*> _netvec;
-	float _min_box_x;
-	float _min_box_y;
 
 	bool _backup_right; //ROTATE TREE BACKUP
 	BSTree<BSTreeObj>::iterator _backup_it; //ROTATE BACKUP 

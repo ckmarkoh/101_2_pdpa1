@@ -22,7 +22,6 @@
 //#define T 1000
 //#define FROZEN 30
 
-
 unsigned sa_total_time=0;
 //#define R 0.9999
 using namespace std;
@@ -31,8 +30,12 @@ void PDPA1::tree_debug(const char* filename){
 	_treemgr.print(0,1,filename);
 }
 
+unsigned Block::B_Range_x=10;
+unsigned Block::B_Range_y=10;
+
+
 void PDPA1::test_tree_nrestsore(){
-		cout<<"tree1"<<endl;
+/*		cout<<"tree1"<<endl;
 //		tree_debug("tree1.out");
 //		draw_block("tree1.raw");
 		_treemgr.getCost();
@@ -47,14 +50,16 @@ void PDPA1::test_tree_nrestsore(){
 		cout<<"tree3"<<endl;
 //		tree_debug("tree3.out");
 //		draw_block("tree3.raw");
-		_treemgr.printCost(1);
+		_treemgr.printCost(1);*/
+	_treemgr.test_block_area();
 }
 
 
 void PDPA1::build_tree(){
-	cout<<"R:"<<R<<endl;
-	cout<<"T:"<<T<<endl;
-	cout<<"FROZEN:"<<FROZEN<<endl;
+
+	Block::B_Range_x=_outline[0];
+	Block::B_Range_y=_outline[1];
+	
 	float min_block_cost=0;
 	float min_net_cost=0;
 	float min_pos_cost=0;
@@ -71,10 +76,10 @@ void PDPA1::build_tree(){
 		while(!_treemgr.insert(_block.size(),_block[i],1));
 	}
 	min_net_cost=sqrt(min_block_cost)*float(_net.size());
-	cout<<"min_block_cost:"<<min_block_cost<<endl;
-	cout<<"min_net_cost:"<<min_net_cost<<endl;
+//	cout<<"min_block_cost:"<<min_block_cost<<endl;
+//	cout<<"min_net_cost:"<<min_net_cost<<endl;
 	min_pos_cost=(_outline[0]+_outline[1])*0.5*_net.size();
-	_treemgr.setMinCost(min_block_cost,min_net_cost,min_pos_cost,_outline[0],_outline[1]);
+	_treemgr.setMinCost(min_block_cost,min_net_cost,min_pos_cost);
 	_treemgr.get_block_cost();
 	_treemgr.setNetVec(_net);
 
@@ -101,7 +106,7 @@ void PDPA1::simu_anneal(){
 	float t=T;
 	float frozen=FROZEN;
 	float i=0;
-	_myusage.reset();
+//	_myusage.reset();
 
 //	_treemgr.printCost();
 	while(!simu_anneal_sub(r,t,frozen)){
@@ -114,7 +119,7 @@ void PDPA1::simu_anneal(){
 		string test = ss.str();
 		string imgstate=_imgname+"_"+string(test)+".raw";
 		draw_block(imgstate.c_str());
-		cout<<"val: "<<val<<endl;
+//		cout<<"val: "<<val<<endl;
 		if(unsigned(i)%7==0){
 			r=R;
 			t=T;
@@ -123,7 +128,8 @@ void PDPA1::simu_anneal(){
 		}
 		if(i>50){break;}
 	}
-	cout<<"overall times:"<<sa_total_time<<endl;
+	cout<<sa_total_time<<endl;
+//	cout<<"overall times:"<<sa_total_time<<endl;
 /*	
 	float r=R1;
 	float t=T1;
@@ -142,10 +148,10 @@ void PDPA1::simu_anneal(){
 	}*/
 }
 bool PDPA1::simu_anneal_sub(float r,float t,float frozen){
-	cout<<"**********************start sa:************************8"<<endl;
-	cout<<"R:"<<r<<endl;
-	cout<<"T:"<<t<<endl;
-	cout<<"FROZEN"<<frozen<<endl;
+//	cout<<"**********************start sa:************************8"<<endl;
+//	cout<<"R:"<<r<<endl;
+//	cout<<"T:"<<t<<endl;
+//	cout<<"FROZEN"<<frozen<<endl;
 	unsigned times=0;
 	bool complete=false;
 	unsigned fall_time=0;
@@ -161,7 +167,7 @@ bool PDPA1::simu_anneal_sub(float r,float t,float frozen){
 		float after_cost=_treemgr.getCost();
 		if(after_cost==-1){
 			complete=true;
-			cout<<"complete!!!"<<endl;
+	//		cout<<"complete!!!"<<endl;
 			break;
 		}
 		float delta_cost=after_cost-origin_cost;
@@ -182,17 +188,17 @@ bool PDPA1::simu_anneal_sub(float r,float t,float frozen){
 	}
 	_treemgr.getCost();
 
-	cout<<"stage_complete"<<endl;
-	cout<<"times:"<<times<<endl;
-	cout<<"fall_times:"<<fall_time<<endl;
-	cout<<"climb_times:"<<climb_time<<endl;
-	cout<<"restore_times:"<<restore_time<<endl;
+//	cout<<"stage_complete"<<endl;
+//	cout<<"times:"<<times<<endl;
+//	cout<<"fall_times:"<<fall_time<<endl;
+//	cout<<"climb_times:"<<climb_time<<endl;
+//	cout<<"restore_times:"<<restore_time<<endl;
 
-	_treemgr.printCost(1);
+//	_treemgr.printCost(1);
 	
-	cout<<"========report=========="<<endl;
-	_myusage.report(1,1);
-	cout<<"**********************end sa:************************8"<<endl;
+//	cout<<"========report=========="<<endl;
+//	_myusage.report(1,1);
+//	cout<<"**********************end sa:************************8"<<endl;
 	sa_total_time+=times;
 	return complete;
 }
