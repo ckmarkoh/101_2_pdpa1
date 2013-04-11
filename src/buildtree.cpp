@@ -54,7 +54,7 @@ void PDPA1::test_tree_nrestsore(){
 void PDPA1::build_tree(){
 	cout<<"R:"<<R<<endl;
 	cout<<"T:"<<T<<endl;
-	cout<<"FROZEN"<<FROZEN<<endl;
+	cout<<"FROZEN:"<<FROZEN<<endl;
 	float min_block_cost=0;
 	float min_net_cost=0;
 	float min_pos_cost=0;

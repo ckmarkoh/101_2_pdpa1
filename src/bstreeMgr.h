@@ -397,10 +397,10 @@ public:
 		  BSTree<BSTreeObj>::iterator li = _container.begin();
 		  for (; li != _container.end(); ++li){
 			 	if(! (*li).getBlock()->inRange(unsigned(_min_box_x),unsigned(_min_box_y)) ){
-			 		tempp++;	
+			 		tempp+=(*li).getBlock()->area();	
 				}
 			 }
-		return tempp/_container.size();
+		return tempp/_min_block_cost;
 	}
 
 	float getCost(){
