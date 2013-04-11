@@ -32,7 +32,7 @@ vector<string> PDPA1::parse_line(string line){
 		//	sstr.erase(sstr.find_first_of(whitespace.c_str()),sstr.find_last_of(whitespace.c_str()));
 			if(sstr.size()>0){
 				vstr.push_back(sstr);
-		//		cout<<"sstr:"<<sstr<<endl;
+		//		//cout<<"sstr:"<<sstr<<endl;
 			}	
 			pch = strtok (NULL, " \t");
 		}
@@ -44,17 +44,18 @@ bool PDPA1::store_line(ifstream& myfile,queue<string>& q,size_t s,vector<string>
 		string line;
 		getline (myfile,line);
 		vector<string> vstr;
-	//	cout<<"line:"<<line<<endl;
+	//cout<<"line:"<<line<<endl;
 		if(!myfile.eof()){
 			vstr=parse_line(line);
-			//cout<<"vstr[0]:"<<vstr[0]<<endl;	
+			//cout<<"vstr0"<<endl;
+			////cout<<"vstr[0]:"<<vstr[0]<<endl;	
 		}
 		else{
-		//	cout<<"end_of_file"<<endl;
+		//cout<<"end_of_file"<<endl;
 			return true;
 		}
 		for(size_t i=0;i<vstr.size();i++){
-		//	cout<<"i:"<<i<<" vstr[i]"<<vstr[i]<<endl;
+		//cout<<"i:"<<i<<" vstr[i]"<<vstr[i]<<endl;
 			q.push(vstr[i]);
 		}
 	}
@@ -113,7 +114,7 @@ bool PDPA1::parse_block(ifstream & block_file){
 		Read_state rstate=READ_OUTLINE;
 		while(true){
 				switch(rstate){
-		//		cout<< "rstate2:" <<rstate<<endl;
+		//		//cout<< "rstate2:" <<rstate<<endl;
 				case READ_OUTLINE:{
 					if( (!store_line(block_file,rqueue,3,line_out)) && (line_out[0].find("Outline")!=string::npos) ) {
 						_outline[0]=atoi(line_out[1].c_str());
@@ -143,7 +144,7 @@ bool PDPA1::parse_block(ifstream & block_file){
 					}
 				}break;
 				case READ_BLOCK:{
-	//				cout<< "num_block:"<<num_block<<endl;
+					//cout<< "num_block:"<<num_block<<endl;
 					if(--num_block>=0){
 						if(store_line(block_file,rqueue,3,line_out)){
 							return false;
@@ -159,13 +160,13 @@ bool PDPA1::parse_block(ifstream & block_file){
 					}
 				}break;
 				case READ_TERMINAL:{
-	//				cout<< "num_terminal:"<<num_terminal<<endl;
+					//cout<< "num_terminal:"<<num_terminal<<endl;
 					if(--num_terminal>=0){
 						if(store_line(block_file,rqueue,4,line_out)){
 							return false;
 						}
 						Terminal* t= new Terminal(line_out[0], atoi(line_out[2].c_str()), atoi(line_out[3].c_str()) );
-		//				cout<<"line_out[0]:"<<line_out[0]<<endl;
+						//cout<<"line_out[0]:"<<line_out[0]<<endl;
 						//assert(_terminal.find(line_out[0])==_terminal.end());
 						//_terminal[line_out[0]]=t;
 						assert(vector_find(_terminal,line_out[0])==_terminal.size());
@@ -207,7 +208,7 @@ bool PDPA1::parse_net(ifstream & net_file){
 					num_net=atoi(line_out[1].c_str());
 					rstate=READ_NUM_DEGREE;
 				}else{
-			//		cout<<"f0"<<endl;
+			//		//cout<<"f0"<<endl;
 					return false;
 				}
 			}break;
@@ -217,20 +218,20 @@ bool PDPA1::parse_net(ifstream & net_file){
 					n=new Net(_net.size());	
 					rstate=READ_NET;		
 				}else{
-				//	cout<<"f1"<<endl;
+				//cout<<"f1"<<endl;
 					return false;
 				}
 			}break;
 			case READ_NET:{
 				if(num_net > 0){
 					if(--num_degree>=0){
-					//	cout<<"num_degree"<<num_degree<<endl;
+					//cout<<"num_degree"<<num_degree<<endl;
 						if(store_line(net_file,rqueue,1,line_out)){
-					//		cout<<"f2"<<endl;
+							//cout<<"f2"<<endl;
 							return false;
 						}
 						size_t pos=vector_find(_block,line_out[0]);
-					//	cout<<"line_out[0]:"<<line_out[0]<<endl;
+					//cout<<"line_out[0]:"<<line_out[0]<<endl;
 						if(pos!=_block.size()){
 							n->add_terminal(_block[pos]);
 						}else{
@@ -267,19 +268,19 @@ bool PDPA1::parse_net(ifstream & net_file){
 
 void PDPA1::parser_debug(bool b,bool t,bool n){
 	if(b){
-		cout<<"block_count:"<<_block.size()<<endl;
+		//cout<<"block_count:"<<_block.size()<<endl;
 		for (size_t i=0;i<_block.size();i++){
 			_block[i]->print();
 		}
 	}
 	if(t){
-		cout<<"terminal_count:"<<_terminal.size()<<endl;
+		//cout<<"terminal_count:"<<_terminal.size()<<endl;
 			for (size_t i=0;i<_terminal.size();i++){
 			_terminal[i]->print();
 		}
 	}
 	if(n){
-		cout<<"net_count:"<<_net.size()<<endl;
+		//cout<<"net_count:"<<_net.size()<<endl;
 		for (size_t i=0;i<_net.size();i++){
 			_net[i]->print();
 		}

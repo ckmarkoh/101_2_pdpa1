@@ -15,8 +15,13 @@ int main (int argc, char *argv[]){
 		pdpa1->sort_block();
 	//	pdpa1->parser_debug(1,0,0);	
 		pdpa1->build_tree();
-	//	pdpa1->parser_debug(1,0,0);
+//		cout<<"parser_debug"<<endl;
+//		pdpa1->parser_debug(1,1,1);
 
+		#ifdef TEST_PARSER
+		pdpa1->draw_block(imgin.c_str() );
+		#endif
+		
 		#ifdef SIMU_ANNEAL 
 		pdpa1->draw_block(imgin.c_str() );
 //		pdpa1->tree_debug();

@@ -8,7 +8,7 @@ CFLAGS = -g -Wall
 CDEFINE:= -DRZ
 
 dummy:
-	@echo "make<nr|sa>"
+	@echo "make<nr|pa|sa>"
 
 .PHONY : all clean
 
@@ -19,7 +19,10 @@ nr: CDEFINE := -DTEST_NRESTORE
 
 sa: CDEFINE := -DSIMU_ANNEAL
 
-nr sa:clean all
+pa: CDEFINE := -DTEST_PARSER
+
+
+nr sa pa:clean all
 
 
 
