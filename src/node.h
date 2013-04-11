@@ -61,6 +61,8 @@ public:
 	void print(){
 		cout<<"n:"<<_name <<" _w:"<<_w<<" _h:"<< _h<<endl;
 	}
+	Block(string n,unsigned w, unsigned h,unsigned x,unsigned y):Terminal(n,x,y),_w(w),_h(h){}
+
 	void rotate(){
 		unsigned temp=_w;
 		_w=_h;
@@ -84,9 +86,40 @@ public:
 	bool inRange(unsigned x,unsigned y){
 		return ( ((_x+_w)<x) && ((_y+_h)<y) ); 
 	}
+	bool inRange(){
+		return ( ((_x+_w)<B_Range_x) && ((_y+_h)<B_Range_y) ); 
+	}
+
 	bool lie_or_stand(){
 		return (_w/_h) > 1;
 	}
+	unsigned area_out(){
+		if(inRange()){
+			//cout<<"5"<<endl;
+			return 0;
+		}
+		else{
+			unsigned _xw=_x+_w;
+			unsigned _yh=_y+_h;
+			if((_x>B_Range_x)||(_y>B_Range_y)){
+			//	cout<<"4"<<endl;
+				return area();	
+			}
+			else if(_xw<B_Range_x){
+			//	cout<<"3"<<endl;
+				return _w*(_yh-B_Range_y); 
+			}
+			else if(_yh<B_Range_y){
+			//	cout<<"2"<<endl;
+				return _h*(_xw-B_Range_x); 
+			}
+			else{
+			//	cout<<"1"<<endl;
+				return area()-(B_Range_x-_x)*(B_Range_y-_y);
+			}
+		}
+	}
+	
 	/*void setW(unsigned w){
 		_w=w;
 	}
@@ -97,11 +130,13 @@ public:
 		//cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<< _y<<" _h"<<h<<"_w"<<w<<endl;
 		cout<<"n:"<<_name <<" _x:"<<_x<<" _y:"<<_y<<endl;//<< _y<<" _h"<<h<<"_w"<<w<<endl;
 	}*/
+	static unsigned B_Range_x;
+	static unsigned B_Range_y;
+
 private:
 	unsigned _w;
 	unsigned _h;
 };
-
 
 class Net{
 public:

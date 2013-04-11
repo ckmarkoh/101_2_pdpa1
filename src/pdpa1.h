@@ -47,6 +47,7 @@ public:
 	void setImgName(string s){
 		_imgname=s;
 	}
+
 private:
 	string _imgname;
 	MyUsage _myusage;
