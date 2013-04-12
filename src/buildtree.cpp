@@ -128,7 +128,7 @@ void PDPA1::simu_anneal(){
 			}
 		}	
 		string imgstate=_imgname+"_"+string_to_int(val)+".raw";
-		draw_block(imgstate.c_str());
+		//draw_block(imgstate.c_str());
 		if(i>50){break;}
 	}
 	cout<<sa_total_time<<endl;
