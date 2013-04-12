@@ -47,6 +47,10 @@ public:
               << _currentMem << " M Bytes" << endl;
       }
    }
+   double getTotalTime(){
+		setTimeUsage();
+		return _totalUsedTime;
+   }
 
 private:
    // for Memory usage

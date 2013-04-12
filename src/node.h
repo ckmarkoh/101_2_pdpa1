@@ -126,7 +126,9 @@ public:
 			}
 		}
 	}
-	
+	void print_pos(ofstream& fout){
+		fout<<_name<<" "<<_x<<" "<<_y<<" "<<_x+_w<<" "<<_y+_h<<endl;
+	}
 	/*void setW(unsigned w){
 		_w=w;
 	}
@@ -139,7 +141,7 @@ public:
 	}*/
 	static unsigned B_Range_x;
 	static unsigned B_Range_y;
-
+	static float B_Alpha;
 private:
 	unsigned _w;
 	unsigned _h;

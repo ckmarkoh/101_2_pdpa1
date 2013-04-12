@@ -124,13 +124,15 @@ public:
 		_min_net_cost=n;
 		_min_pos_cost=p;
 
+	 block_x=1;
+	 block_y=1;
 	 block_cost=1;
 	 net_cost=1;
 	 pos_cost=1;
 	 penalty=1;
 	 cn=1;
 	 block_penalty=1;
-
+	 _output_cost=999999;
 	}
 	void random_exchange() {
 		size_t s = _container.size();
@@ -370,27 +372,27 @@ public:
 			}
 		}
 		else{
-					_stat_rs_q.push(SMART_EX_RO);
+			_stat_rs_q.push(SMART_EX_RO);
 		}
    }//BUG
 
 
-	void container_backup(){
-		while(_stat_rs_q.size()>0){
-			_stat_rs_v[size_t(_stat_rs_q.front())]++;
-			_stat_rs_q.pop();
+	void container_backup(vector<BSTreeObj>& backup_vec,bool stat=true){
+		if(stat){
+			while(_stat_rs_q.size()>0){
+				_stat_rs_v[size_t(_stat_rs_q.front())]++;
+				_stat_rs_q.pop();
+			}
 		}
-
-
 		queue< BSTree<BSTreeObj>::iterator > q;
-		_backup_vec.clear();
+		backup_vec.clear();
 		BSTree<BSTreeObj>::iterator it0=_container.root();
 		q.push( it0 );
 		while(q.size()>0){
 			BSTree<BSTreeObj>::iterator it=q.front();
 			q.pop();
 			(*it).store_lie();
-			_backup_vec.push_back(*it);
+			backup_vec.push_back(*it);
 			if(it!=_container.end()){
 				 BSTree<BSTreeObj>::iterator it1 = it;
 				 BSTree<BSTreeObj>::iterator it2 = it;
@@ -403,21 +405,27 @@ public:
 			}
 		}
 	}
-	void restore_backup(){
-		while(_stat_rs_q.size()>0){
-			_stat_rs_q.pop();
+	void container_backup(){
+		container_backup(_backup_vec);
+	}
+	void restore_backup(vector<BSTreeObj>& backup_vec,bool stat=true ){
+		if(stat){
+			while(_stat_rs_q.size()>0){
+				_stat_rs_q.pop();
+			}
 		}
-		restore_container();
+		_container.clear();	
+		for(size_t i=0;i<backup_vec.size();i++){
+			backup_vec[i].restore_lie();
+			insert(backup_vec[i].getId(),backup_vec[i].getBlock(),0);
+		}
+	//	restore_container();
 	//	restore_block();
 	}
-
-	void restore_container(){
-			_container.clear();	
-			for(size_t i=0;i<_backup_vec.size();i++){
-				_backup_vec[i].restore_lie();
-				insert(_backup_vec[i].getId(),_backup_vec[i].getBlock(),0);
-			}
+	void restore_backup(){
+		restore_backup(_backup_vec);
 	}
+
 //	void restore_block(){
 	//		while(_backup_block.size()>0){
 	//			_backup_block.front()->rotate();
@@ -468,39 +476,48 @@ public:
 		return tempp/_min_block_cost;
 	}
 
-	float getCost(){
+	float getCost(bool enable_netcost=false){
 		get_block_cost();
 		//balanced_tree_cost();
 		//_cost=float(_yheight.find_max(0,_yheight.find_max_x())*_yheight.find_max_x());
 		//float block_cost=pow(float(_yheight.find_max(0,_yheight.find_max_x())),2)+pow(_yheight.find_max_x(),2);
-		float block_x=float(_yheight.find_max_x());
-		float block_y=float(_yheight.find_max(0,unsigned(block_x)));
+		 block_x=float(_yheight.find_max_x());
+		 block_y=float(_yheight.find_max(0,unsigned(block_x)));
 		 block_cost=block_x*block_y;
-
-		block_penalty=get_penalty();
+		 block_penalty=get_penalty();
 	//	 penalty=pow((block_x/block_y)-(Block::B_Range_x/Block::B_Range_y),2)+block_penalty;
 		 penalty=block_penalty;
-		 net_cost=get_net_cost();
-		
-		pos_cost=get_pos_cost();
-
-			cn= COST_NORMALIZE*( (block_cost/_min_block_cost)+(net_cost/_min_net_cost)*0+(pos_cost/_min_pos_cost)*0.01 + penalty*10)/3  ;
-		if(block_penalty>0){
-//		cout<<"block_cost:"<<block_cost<<" normalize:"<<(block_cost/_min_block_cost)<<" x:"<<block_x<<" y:"<<block_y<<endl;
-//		cout<<"net_cost:"<<net_cost<<" normalize:"<<(net_cost/_min_net_cost)<<endl;
-//		cout<<"penalty:"<<penalty<<endl;
-			return cn;
-		}
-		else{
+		 pos_cost=get_pos_cost();
+			
+/*		 if(enable_netcost){
+			 net_cost=get_net_cost();
+			_output_cost=Block::B_Alpha*(block_cost/_min_block_cost)+(1-Block::B_Alpha)*(net_cost/_min_net_cost);
+			cn= COST_NORMALIZE*( _output_cost+
+								(pos_cost/_min_pos_cost)*0.01 + 
+								penalty*10
+								)/3  ;
+			}
+		else{*/
+			cn= COST_NORMALIZE*( (block_cost/_min_block_cost)+(pos_cost/_min_pos_cost)*0.01 + penalty*10)/3  ;
+		//}
+		if( (block_penalty<=0)&&(!enable_netcost) ){
+			 net_cost=get_net_cost();
+			_output_cost=Block::B_Alpha*(block_cost)+(1-Block::B_Alpha)*(net_cost);
+			optimize_backup(_output_cost);
 			return -1;
 		}
-//		cout<<"normalize cost:"<<cn<<endl;
-	/*	if(_rnGen(unsigned(1200))%1119==1){
-			cn=0;
-			cout<<"distrub"<<endl;
-		}*/
+		return cn;
 	}
-	
+
+	vector<float> get_result(){
+		vector<float> result_array;
+			result_array.push_back(_output_cost);
+			result_array.push_back(net_cost);
+			result_array.push_back(block_cost);
+			result_array.push_back(block_x);
+			result_array.push_back(block_y);
+		return result_array;
+	}
 	void printCost(bool operation=false){
 		if(operation){
 			cout<<"======operation======"<<endl;
@@ -517,9 +534,11 @@ public:
 		cout<<"block_penalty:"<<block_penalty<<endl;
 		cout<<"penalty:"<<penalty<<endl;
 		cout<<"normalize_cost:"<<cn<<endl;
+		cout<<"cost_optimize:"<<_cost_optimize <<endl;
 		cout<<"======================="<<endl;
 //		return cn;
 	}
+
 
 	float getRandom(float f){
 		return _rnGen(f);
@@ -544,10 +563,10 @@ public:
 	}
 	float get_net_cost(){
 		float cost=0;
-//		for(size_t i=0; i<_netvec.size();i++){
+		for(size_t i=0; i<_netvec.size();i++){
 //			cout<<"get_net_cost"<<cost<<endl;
-//			cost+=float(_netvec[i]->getLength());
-//		}
+			cost+=float(_netvec[i]->getLength());
+		}
 		return cost;
 	}
 	void test_block_area(){
@@ -568,6 +587,16 @@ public:
 		cout<<"a8"<<a8.area_out()<<endl;
 	}
 
+	void optimize_backup(float c=999999){
+		_cost_optimize=c;
+		container_backup(_backup_optimize,0);
+	}
+
+	float optimize_restore(){
+		restore_backup(_backup_optimize,0);
+		return _cost_optimize;
+	}
+
 private:
    BSTree<BSTreeObj>   _container;
    //BSTree<BSTreeObj>*  _backup_container;
@@ -579,6 +608,8 @@ private:
 	float _min_net_cost;	
 	float _min_pos_cost;
 
+	float block_x;
+	float block_y;
 	float block_penalty;
 	float block_cost;
 	float net_cost;
@@ -589,6 +620,12 @@ private:
 	unsigned* _weight_random;
 
    	vector<BSTreeObj> _backup_vec; // EXCHANGE_TREE BACKUP
+
+
+   	vector<BSTreeObj> _backup_optimize; // EXCHANGE_TREE BACKUP
+	float _cost_optimize;
+
+	float _output_cost;
 	
 	vector<Net*> _netvec;
 

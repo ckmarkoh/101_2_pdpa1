@@ -45,7 +45,11 @@ public:
 	bool simu_anneal_sub(float r,float t,float frozen);
 	void draw_block(const char* filename);
 	void test_tree_nrestsore();
-
+	void set_alpha(float f){
+		f= (f>1) ? 1 : f;
+		f= (f<0) ? 0 : f;
+		Block::B_Alpha=f;
+	}
 	void setImgName(string s){
 		_imgname=s;
 	}
@@ -55,6 +59,8 @@ public:
 		string test = ss.str();
 		return test;
 	}
+	void print_result(const char* filename);
+
 private:
 	string _imgname;
 	MyUsage _myusage;
