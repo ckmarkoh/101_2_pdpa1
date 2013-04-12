@@ -7,8 +7,7 @@ CFLAGS = -g -Wall
 #CDEFINE:= -DRSEED 
 CDEFINE:= -DRZ
 
-dummy:
-	@echo "make<nr|pa|sa>"
+dummy:sa
 
 .PHONY : all clean
 
@@ -19,11 +18,18 @@ nr: CDEFINE := -DTEST_NRESTORE
 
 sa: CDEFINE := -DSIMU_ANNEAL
 
+<<<<<<< HEAD
 pa: CDEFINE := -DTEST_PARSER
 
 
 nr sa pa:clean all
+=======
+nr sa: clean all
+>>>>>>> tune_1
 
+
+rmmain:
+	@rm $(SRCPATH)/main.o
 
 
 $(EXEC_FILE): ./src/$(EXEC_FILE)
