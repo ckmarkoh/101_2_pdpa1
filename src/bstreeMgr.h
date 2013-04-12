@@ -30,11 +30,16 @@ public:
    BSTreeObj(){ _id=-1;};
 //   BSTreeObj(const float& s)
   // : _id(s){_b}
-   BSTreeObj(const float& s,Block* b)
-   : _id(s),_b(b){}
+   BSTreeObj(const float& s,Block* b): _id(s),_b(b){
+   		_lie=b->lie_or_stand();
+		assert((_lie==1)||(_lie==0));
+	}
 
    // { if (int(_id.size()) > _idLen) _id.resize(_idLen); }
-   BSTreeObj(const BSTreeObj& o) : _id(o._id),_b(o._b) {}
+   BSTreeObj(const BSTreeObj& o) : _id(o._id),_b(o._b),_lie(o._lie) {
+   		//cout<<"copy construct"<<endl;
+   		//_lie=o._b->lie_or_stand();
+   }
    bool operator < (const BSTreeObj& o) const { return (_id < o._id); }
    bool operator > (const BSTreeObj& o) const { return (_id > o._id); }
    bool operator == (const BSTreeObj& o) const { return (_id == o._id); }
@@ -51,11 +56,26 @@ public:
 		tobj._b=this->_b;
 		this->_b=temp;
    }
-
+	void store_lie(){
+//		cout<<"store_lie:"<<_b->getName()<<endl;
+		_lie=_b->lie_or_stand();
+		assert((_lie==1)||(_lie==0));
+	}
+	void restore_lie(){
+//		cout<<"restore_lie:"<<_b->getName()<<endl;
+		while(_b->lie_or_stand()!=_lie){
+			assert((_lie==1)||(_lie==0));
+//			cout<<"b_lie:"<<_b->lie_or_stand()<< " _lie:"<<_lie<<endl;
+			_b->rotate();
+		}
+	}	
 	float getId(){return _id;}
 private:
+
    float      _id;  // _data should alywas be between [0, _dataRange - 1]
    Block* 	  _b;
+
+	bool _lie;
   // static int  _idLen;
 };
 /*
@@ -87,6 +107,9 @@ public:
    		if(random){
 			f=_rnGen(f);
 		}
+	/*	if(_rnGen(unsigned(6))%2==0){
+			b->rotate();
+		}*/
 		BSTreeObj o(f,b);
 	   if(_container.insert(o)){
 	   	//	_mincost+=float(b->area());
@@ -168,6 +191,9 @@ public:
 									}else{
 										id*=0.99;
 									}
+							/*		if(_rnGen(unsigned(6))%2==0){
+										backuped_rotate(b);
+									}*/
 								}while(!insert(id,b,0 ));//cout<<"1"<<endl;}
 							 }else{
 								assert(0);
@@ -178,8 +204,10 @@ public:
 					}
 				}
 				if(b->lie_or_stand()!=b2->lie_or_stand()){
-					backuped_rotate(b);
-					backuped_rotate(b2);
+					b->rotate();
+					b2->rotate();
+				//	backuped_rotate(b);
+				//	backuped_rotate(b2);
 				}
 					assert(it!=_container.end());
 					//cout<<"swap"<<endl;
@@ -230,13 +258,14 @@ public:
 			size_t id=_rnGen(unsigned(_container.size()));
 			BSTree<BSTreeObj>::iterator it =getPos(id);
 			Block* tempb=(*it).getBlock();
-			backuped_rotate(tempb);
+			//backuped_rotate(tempb);
+			tempb->rotate();
 	}
 
-	void backuped_rotate(Block* tempb){
-			tempb->rotate();
-			_backup_block.push(tempb);
-	}
+	//void backuped_rotate(Block* tempb){
+	//		tempb->rotate();
+	//		_backup_block.push(tempb);
+	//}
    void random_rotate(){
    		//cout<<"rotate"<<endl;
 		size_t z=0;
@@ -268,7 +297,43 @@ public:
 		return _container.rotate(id,right);
    }
    
-	
+
+
+   void test_random_disturb(){//BUG
+		if(!smart_exchange_rotate()){
+			unsigned hasdo=0;
+		
+			while(hasdo<=0){
+				if((_rnGen(unsigned(12)))%4  == 0){
+			//		cout<<"random_exchange"<<endl;
+					_stat_rs_q.push(EXCHANGE_TREE);
+					random_exchange();
+					hasdo++;
+				}
+				if((_rnGen(unsigned(12)))%4==1){
+			//		cout<<"random_rotate"<<endl;
+					_stat_rs_q.push(ROTATE_TREE);
+					random_rotate();
+					hasdo++;
+				}
+				if((_rnGen(unsigned(12)))%4==2){
+			//		cout<<"random_exchange_block"<<endl;
+					_stat_rs_q.push(EXCHANGE_BLOCK);
+					random_exchange_block();
+					hasdo++;
+				}
+				if((_rnGen(unsigned(12)))%4== 3){
+			//		cout<<"random_rotate_block"<<endl;
+						_stat_rs_q.push(ROTATE_BLOCK);
+						random_rotate_block();	
+				}
+			}
+		}
+		else{
+					_stat_rs_q.push(SMART_EX_RO);
+	}
+   }//BUG
+
    void random_neighbor(){//BUG
 		container_backup();
 
@@ -324,6 +389,7 @@ public:
 		while(q.size()>0){
 			BSTree<BSTreeObj>::iterator it=q.front();
 			q.pop();
+			(*it).store_lie();
 			_backup_vec.push_back(*it);
 			if(it!=_container.end()){
 				 BSTree<BSTreeObj>::iterator it1 = it;
@@ -342,22 +408,23 @@ public:
 			_stat_rs_q.pop();
 		}
 		restore_container();
-		restore_block();
+	//	restore_block();
 	}
 
 	void restore_container(){
 			_container.clear();	
 			for(size_t i=0;i<_backup_vec.size();i++){
+				_backup_vec[i].restore_lie();
 				insert(_backup_vec[i].getId(),_backup_vec[i].getBlock(),0);
 			}
 	}
-	void restore_block(){
-			while(_backup_block.size()>0){
-				_backup_block.front()->rotate();
-				_backup_block.pop();
-			}
+//	void restore_block(){
+	//		while(_backup_block.size()>0){
+	//			_backup_block.front()->rotate();
+	//			_backup_block.pop();
+	//		}
 			
-	}
+//	}
 	
    BSTree<BSTreeObj>::iterator getPos(size_t pos) {
          size_t i = 0;

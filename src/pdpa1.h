@@ -2,7 +2,9 @@
 #define PDPA1_H
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
+#include <sstream>
 #include<iostream>
 #include<fstream>
 #include<vector>
@@ -47,7 +49,12 @@ public:
 	void setImgName(string s){
 		_imgname=s;
 	}
-
+	string string_to_int(int val){
+		stringstream ss (stringstream::in | stringstream::out);
+		ss << val;
+		string test = ss.str();
+		return test;
+	}
 private:
 	string _imgname;
 	MyUsage _myusage;

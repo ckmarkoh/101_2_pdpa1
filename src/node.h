@@ -91,7 +91,14 @@ public:
 	}
 
 	bool lie_or_stand(){
-		return (_w/_h) > 1;
+		bool lie;
+		if(float(float(_w)/float(_h))>1){ 
+			lie=true;
+		}
+		else{
+			lie=false;
+		}
+		return lie;
 	}
 	unsigned area_out(){
 		if(inRange()){

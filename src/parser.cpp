@@ -161,13 +161,13 @@ bool PDPA1::parse_block(ifstream & block_file){
 					}
 				}break;
 				case READ_TERMINAL:{
-					cout<< "num_terminal:"<<num_terminal<<endl;
+				//	cout<< "num_terminal:"<<num_terminal<<endl;
 					if(--num_terminal>=0){
 						if(store_line(block_file,rqueue,4,line_out)){
 							return false;
 						}
 						Terminal* t= new Terminal(line_out[0], atoi(line_out[2].c_str()), atoi(line_out[3].c_str()) );
-						cout<<"line_out[0]:"<<line_out[0]<<endl;
+				//		cout<<"line_out[0]:"<<line_out[0]<<endl;
 						//assert(_terminal.find(line_out[0])==_terminal.end());
 						//_terminal[line_out[0]]=t;
 						assert(vector_find(_terminal,line_out[0])==_terminal.size());

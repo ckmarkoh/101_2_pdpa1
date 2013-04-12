@@ -3,7 +3,6 @@
 #include "rnGen.h"
 #include<iostream>
 #include <math.h>
-#include <sstream>
 
 #define E 2.71828182845
 
@@ -35,23 +34,24 @@ unsigned Block::B_Range_y=10;
 
 
 void PDPA1::test_tree_nrestsore(){
-/*		cout<<"tree1"<<endl;
-//		tree_debug("tree1.out");
+		cout<<"tree1"<<endl;
+		tree_debug("tree1.out");
 //		draw_block("tree1.raw");
 		_treemgr.getCost();
+		_treemgr.container_backup();//container_backup
 		for(size_t i=0;i<10000;i++){
-			_treemgr.random_neighbor();
-			_treemgr.restore_backup();
+			_treemgr.test_random_disturb();
 		}
-		_treemgr.getCost();
+//		_treemgr.getCost();
 		cout<<"tree2"<<endl;
-//		tree_debug("tree2.out");
+		tree_debug("tree2.out");
 //		draw_block("tree2.raw");
+		_treemgr.restore_backup();
 		cout<<"tree3"<<endl;
-//		tree_debug("tree3.out");
+		tree_debug("tree3.out");
 //		draw_block("tree3.raw");
-		_treemgr.printCost(1);*/
-	_treemgr.test_block_area();
+//		_treemgr.printCost(1);
+	//	_treemgr.test_block_area();
 }
 
 
@@ -105,7 +105,7 @@ void PDPA1::simu_anneal(){
 	float r=R;
 	float t=T;
 	float frozen=FROZEN;
-	float i=0;
+	int i=0;
 //	_myusage.reset();
 
 //	_treemgr.printCost();
@@ -113,12 +113,7 @@ void PDPA1::simu_anneal(){
 		r=sqrt(r);
 		t*=0.1;
 		frozen*=0.1;
-		float val =i++;
-		stringstream ss (stringstream::in | stringstream::out);
-		ss << val;
-		string test = ss.str();
-		string imgstate=_imgname+"_"+string(test)+".raw";
-		draw_block(imgstate.c_str());
+		int val =i++;
 //		cout<<"val: "<<val<<endl;
 		if(unsigned(i)%7==0){
 			r=R;
@@ -126,6 +121,14 @@ void PDPA1::simu_anneal(){
 			frozen=FROZEN;
 			RandomNumGen::change_seed();
 		}
+		if(unsigned(i)%21==0){
+			cout<<"shuffle"<<endl;
+			for(size_t i=0;i<_block.size()*20;i++){
+				_treemgr.test_random_disturb();
+			}
+		}	
+		string imgstate=_imgname+"_"+string_to_int(val)+".raw";
+		draw_block(imgstate.c_str());
 		if(i>50){break;}
 	}
 	cout<<sa_total_time<<endl;
