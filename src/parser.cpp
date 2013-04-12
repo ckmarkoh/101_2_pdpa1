@@ -44,14 +44,14 @@ bool PDPA1::store_line(ifstream& myfile,queue<string>& q,size_t s,vector<string>
 		string line;
 		getline (myfile,line);
 		vector<string> vstr;
-	//cout<<"line:"<<line<<endl;
-		if(!myfile.eof()){
+	//	cout<<"line:"<<line<<endl;
+		if( ( !myfile.eof() )||(line.size()>0)) {
 			vstr=parse_line(line);
-			//cout<<"vstr0"<<endl;
+	//		cout<<"vstr0"<<endl;
 			////cout<<"vstr[0]:"<<vstr[0]<<endl;	
 		}
-		else{
-		//cout<<"end_of_file"<<endl;
+		else {
+	//	   cout<<"end_of_file"<<endl;
 			return true;
 		}
 		for(size_t i=0;i<vstr.size();i++){
@@ -144,12 +144,13 @@ bool PDPA1::parse_block(ifstream & block_file){
 					}
 				}break;
 				case READ_BLOCK:{
-					//cout<< "num_block:"<<num_block<<endl;
+				//	cout<< "num_block:"<<num_block<<endl;
 					if(--num_block>=0){
 						if(store_line(block_file,rqueue,3,line_out)){
 							return false;
 						}
 						Block* b= new Block(line_out[0], atoi(line_out[1].c_str()), atoi(line_out[2].c_str()) );
+				//		cout<<"line_out[0]:"<<line_out[0]<<endl;
 						//assert(_block.find(line_out[0])==_block.end());
 						//_block[line_out[0]]=b;
 						assert(vector_find(_block,line_out[0])==_block.size());
@@ -160,13 +161,13 @@ bool PDPA1::parse_block(ifstream & block_file){
 					}
 				}break;
 				case READ_TERMINAL:{
-					//cout<< "num_terminal:"<<num_terminal<<endl;
+					cout<< "num_terminal:"<<num_terminal<<endl;
 					if(--num_terminal>=0){
 						if(store_line(block_file,rqueue,4,line_out)){
 							return false;
 						}
 						Terminal* t= new Terminal(line_out[0], atoi(line_out[2].c_str()), atoi(line_out[3].c_str()) );
-						//cout<<"line_out[0]:"<<line_out[0]<<endl;
+						cout<<"line_out[0]:"<<line_out[0]<<endl;
 						//assert(_terminal.find(line_out[0])==_terminal.end());
 						//_terminal[line_out[0]]=t;
 						assert(vector_find(_terminal,line_out[0])==_terminal.size());

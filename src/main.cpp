@@ -19,6 +19,7 @@ int main (int argc, char *argv[]){
 //		pdpa1->parser_debug(1,1,1);
 
 		#ifdef TEST_PARSER
+		pdpa1->parser_debug(1,1,1);
 		pdpa1->draw_block(imgin.c_str() );
 		#endif
 		
