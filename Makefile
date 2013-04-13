@@ -2,7 +2,7 @@ SRCPATH:=./src
 EXEC_FILE := pdpa1
 
 CC = g++ 
-CFLAGS = -g -Wall  
+CFLAGS = -g -Wall -lX11
 
 #CDEFINE:= -DRSEED 
 CDEFINE:= -DRZ
@@ -18,14 +18,10 @@ nr: CDEFINE := -DTEST_NRESTORE
 
 sa: CDEFINE := -DSIMU_ANNEAL
 
-<<<<<<< HEAD
 pa: CDEFINE := -DTEST_PARSER
 
 
 nr sa pa:clean all
-=======
-nr sa: clean all
->>>>>>> tune_1
 
 
 rmmain:

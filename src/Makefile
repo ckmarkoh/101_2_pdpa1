@@ -3,7 +3,7 @@ SRCS := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, %.o, $(SRCS))
 EXE := pdpa1
 CXX = g++
-CFLAGS = -g -Wall $(CDEFINE)
+CFLAGS = -g -Wall  $(CDEFINE) -lX11
 
 .PHONY : depend all clean
 

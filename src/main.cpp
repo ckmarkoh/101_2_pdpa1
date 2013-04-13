@@ -31,6 +31,7 @@ int main (int argc, char *argv[]){
 	//		pdpa1->tree_debug();
 	//		pdpa1->draw_block(imgout.c_str() );
 			pdpa1->print_result(outfilename.c_str());
+			pdpa1->draw_window();
 			#endif
 
 			#ifdef TEST_NRESTORE

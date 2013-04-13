@@ -3,7 +3,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xresource.h>
+#include <utility>   
 #include <sstream>
 #include<iostream>
 #include<fstream>
@@ -60,8 +66,22 @@ public:
 		return test;
 	}
 	void print_result(const char* filename);
+	void draw_window();
+
+	unsigned transfer(unsigned i,unsigned max);
+
+
 
 private:
+
+	struct DrawRect {  
+	   pair<unsigned,unsigned> p1;  
+	   pair<unsigned,unsigned> p2;  
+	   pair<unsigned,unsigned> p3; 
+	   pair<unsigned,unsigned> p4;
+	   string n; 
+	};
+
 	string _imgname;
 	MyUsage _myusage;
 	unsigned* _outline;
