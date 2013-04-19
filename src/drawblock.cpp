@@ -1,6 +1,14 @@
 #include "pdpa1.h"
 #define WIDTH 800
 #define OFFSET 10
+
+
+#ifdef GUI
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xresource.h>
+#endif
+
 using namespace std;
 
 
@@ -51,7 +59,7 @@ fout.close();   // 關閉檔案
 
 
 void PDPA1::draw_window(){
-
+#ifdef GUI
 /* first include the standard headers that we're likely to need */
 	int screen_num, width, height;
 	unsigned long background, border;
@@ -189,4 +197,5 @@ void PDPA1::draw_window(){
 			break;
 		}
 	}
+#endif
 }

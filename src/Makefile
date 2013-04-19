@@ -1,14 +1,14 @@
-
 SRCS := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, %.o, $(SRCS))
-EXE := pdpa1
-CXX = g++
-CFLAGS = -g -Wall  $(CDEFINE) -lX11
+EXE := $(EXEC_FILE0)
+CXX := g++
+#CFLAGS = -g -Wall  $(CDEFINE)
+CFLAGS := $(CFLAGSO) $(CDEFINE) $(CGUIO)
 
 .PHONY : depend all clean
 
 
-all: $(EXE) 
+all: $(EXE)
 
 $(EXE) : $(OBJS)
 	@echo "> compiling: $<"
